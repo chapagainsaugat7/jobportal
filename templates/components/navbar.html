@@ -1,0 +1,115 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-uppercase" href="#">Online Job Portal</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link fw-medium" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-medium" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-medium" href="#">Trending</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-medium button" id="login" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-medium button-1" data-bs-toggle="modal" data-bs-target="#registerModal">Register</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  {% comment %} Modal {% endcomment %}
+  <!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" required>
+          </div>
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input border border-primary" id="exampleCheck1">
+            <label class="form-check-label" for="exampleCheck1">Remember me</label>
+          </div>
+          <div class="mb-3">
+            <a href="#">Forget Password?</a>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Register Modal-->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Who are you?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Tabs starts here -->
+        <nav class="d-flex justify-content-center align-items-center">
+          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            
+            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Job Seeker</button>
+
+            
+            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Employer</button>
+            
+          </div>
+        </nav>
+        <!-- Tabs Ends here -->
+        <!--Tab List-->
+        <div class="tab-content" id="nav-tabContent">
+          <!-- For Job Seeker -->
+          <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+            <div class=" d-flex flex-column justify-content-center align-items-center">
+
+              <i class="fa-solid fa-user d-block mt-1" style="font-size: 80px;"></i>
+              <button type="button" class="btn button mt-2"><a class="text-white" href="register_job_seeker">Register</a></button>
+              <span class="fs-6 mt-2 grey"> Find the best job for you.</span>
+            </div>
+          </div>
+          <!-- For Employer-->
+          <div class="tab-pane fade show" id="nav-profile" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+            <div class=" d-flex flex-column justify-content-center align-items-center">
+
+              <i class="fa-solid fa-building d-block mt-1" style="font-size: 80px;"></i>
+              <button type="button" class=" btn button mt-2"><a class="text-white" href="/register_employer">Register</a></button>
+              
+              <span class="fs-6 mt-2 grey"> Hire the qualified candidate.</span>
+            </div>
+          </div>
+
+
+        </div>
+        <!-- Tab list ends here -->
+      </div>
+      
+    </div>
+  </div>
+</div>

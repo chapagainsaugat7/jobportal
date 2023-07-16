@@ -1,0 +1,25 @@
+{% extends './base/base.html' %}
+<!-- Navbar starts here -->
+{%block navbar%}
+    {% include './components/navbar.html' %}
+{%endblock%}
+<!-- Navbar ends here -->
+
+<!-- Hero starts here -->
+{% block content%}
+    {% include './components/hero.html' %}
+{%endblock%}
+<!-- Hero ends here -->
+
+{% comment %} Testimonials start here {% endcomment %}
+{% comment %} {% block testimonials %}
+    {% include './components/testimonials.html' %}
+{% endblock testimonials %} {% endcomment %}
+{% comment %} Testimonials ends here {% endcomment %}
+
+{% block footer%}
+    {% include './components/footer.html' %}
+{%endblock%}
+
+
+
