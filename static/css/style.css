@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
+
+:root{
+    --color-primary:#832bf0;
+    --color-primary-hover:#8732f0;
+    --color-secondary:#3a0ca3;
+    --color-light:#83c5be;
+    --color-red:#d90429;
+    --color-red-hover:#dd2d4be3;
+    --color-dark:#14213d;
+    --color-grey:#a1a1a1;
+    --color-white:#fff;
+}
+
+
+*{
+    font-family: 'Poppins', sans-serif !important;
+}
+.decorated{
+    color: var(--color-primary);
+
+}
+.text-small{
+    color: var(--color-primary);
+    font-size: 13px !important;
+
+}
+a{
+    text-decoration: none !important;
+}
+
+.grey{
+    color:var(--color-grey) !important;
+    font-weight: 700;
+    font-size:12px !important;
+}
+
+.mb-8{
+    margin-bottom: 10rem !important;
+}
+
+.b-top{
+    border-top:1px solid var(--color-primary);
+}
+.button,.button-1{
+    height:auto;
+    width:80px;
+    padding: 0.4rem;
+    background-color: var(--color-primary) !important;
+    color: var(--color-white);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.5s all ease-in-out;
+    text-align: center;
+}
+.button-1{
+    width:fit-content;
+    background-color: var(--color-red) !important;
+    text-align: center;
+}
+.button:hover{
+    color: var(--color-white);
+    background-color: var(--color-primary-hover) !important;
+}
+
+
+.button-1:hover{
+    color: var(--color-white) !important;
+    background-color: var(--color-red-hover) !important;
+}
+
+.btn-primary-custom{
+    background: transparent !important;
+    border:2px solid var(--color-secondary) !important;
+    padding:10px;
+    border-radius: 10px;
+    text-decoration: none;
+    width:fit-content;
+    transition: 0.6s all ease-in-out;
+}
+
+.btn-primary-custom:hover{
+    background-color: var(--color-secondary) !important;
+    color:white;
+}
+.nav-item{
+    margin-left:1rem !important;
+}
+.nav-link{
+    margin-bottom: 10px !important;
+}
+
+
+.section-title{
+    text-align: center !important;
+    padding-bottom: 30px !important;
+}
+
+/* Making horizontal line below title. */
+
+/* .section-title h2::before{
+    content: "";
+    position: absolute;
+    display: block;
+    width: 120px;
+    height: 1px;
+    background: #ddd;
+    bottom: 1px;
+    left: calc(50% - 60px);
+}
+.section-title h2::after{
+    content: "";
+    position: absolute;
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: #47b2e4;
+    bottom: 0;
+    left: calc(50% - 20px);
+} */
+
+
+/* Style for admin login form */
+
+.panel-heading {
+    text-align: center;
+    margin-bottom: 10px
+}
+
+#forgot {
+    min-width: 100px;
+    margin-left: auto;
+    text-decoration: none
+}
+
+a:hover {
+    text-decoration: none
+}
+
+.form-inline label {
+    padding-left: 10px;
+    margin: 0;
+    cursor: pointer
+}
+
+.btn.btn-primary {
+    margin-top: 20px;
+    border-radius: 15px
+}
+
+.panel {
+    min-height: 380px;
+    box-shadow: 20px 20px 80px rgb(218, 218, 218);
+    border-radius: 12px
+}
+
+.input-field {
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid var(--color-primary);
+    color: var(--color-secondary);
+}
+
+.type-email,.type-password {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    width: 100%
+}
+
+.fa-eye-slash.btn {
+    border: none;
+    outline: none;
+    box-shadow: none
+}
+
+
+a[target='_blank'] {
+    position: relative;
+    transition: all 0.1s ease-in-out
+}
+
+.bordert {
+    border-top: 1px solid #aaa;
+    position: relative
+}
+
+
+@media(max-width: 360px) {
+    #forgot {
+        margin-left: 0;
+        padding-top: 10px
+    }
+
+    body {
+        height: 100%
+    }
+
+    .container {
+        margin: 30px 0
+    }
+
+    .bordert:after {
+        left: 25%
+    }
+}
