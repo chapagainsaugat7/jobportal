@@ -9,6 +9,6 @@ urlpatterns = [
     path('register_employer/',register_employer,name='employer_registration'),
 
     path('portal-admin',admin,name='admin'),
-    path('portal-test',admin_test,name='admin'),
-    
+    path('portal-test',admin_test,name='admin-test'),
+    path('admin_home/',admin_home,name="admin_home")
 ]
