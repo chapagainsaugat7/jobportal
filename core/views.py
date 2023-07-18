@@ -5,20 +5,6 @@ from django.shortcuts import render
 def home(request):
     return render(request,'index.html')
 
-def register_job_seeker(request):
-    return render(request,'forms/job_seeker.html')
-
-def login(request):
-    return render(request,'forms/login.html')
-
-
-def register_employer(request):
-    return render(request,'forms/employer.html')
-
-
-def employer_signin(request):
-    return render(request,'forms/employer_login.html')
-
 
 def admin(request):
     return render(request,'admin-dashboard/adminlogin.html')
