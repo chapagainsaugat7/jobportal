@@ -1,6 +1,6 @@
 :root{
     --color-primary:#832bf0;
-    --color-primary-hover:#863be2;
+    --color-primary-hover:#863be280;
     --color-secondary:#3a0ca3;
     --color-light:#83c5be;
     --color-red:#d90429;
@@ -62,14 +62,20 @@
     display: block;
     text-decoration: none;
     color: var(--color-white);
-
     font-size: 15px;
+    transition:all 0.5s ease-in-out ;
   }
   .sidebar-nav > li > a:hover,
-  .sidebar-nav > li.active > a {
+  .sidebar-nav > li.active > a ,
+  .sidebar-nav>li > div.dropdown:hover{
     text-decoration: none;
     color: var(--color-white);
-    background: var(--color-primary-hover);
+    background: var(--color-primary);
+  }
+
+  .sidebar-nav>li > div.dropdown >.dropdown-menu a.dropdown-item:hover{
+    background-color: var(--color-primary);
+    color:var(--color-white) !important;
   }
   .sidebar-nav > li > a i.fa {
     font-size: 24px;
