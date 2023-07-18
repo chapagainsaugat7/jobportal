@@ -25,3 +25,8 @@ def admin(request):
 
 def admin_test(request):
     return render(request,'admin-dashboard/dashboard.html')
+
+
+
+def admin_home(request):
+    return render(request,'admin-dashboard/adminhome.html')
