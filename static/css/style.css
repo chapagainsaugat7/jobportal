@@ -23,7 +23,13 @@
 .text-small{
     color: var(--color-primary);
     font-size: 13px !important;
-
+}
+.text-black{
+    color:var(--color-dark);
+}
+.text-purple{
+    color:var(--color-primary) !important;
+    
 }
 a{
     text-decoration: none !important;

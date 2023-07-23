@@ -9,6 +9,10 @@
     --color-grey:#a1a1a1;
     --color-white:#fff;
 }
+
+span{
+  color: var(--color-white) !important;
+}
 #wrapper {
     padding-left: 0;
     transition: all 0.5s ease;
@@ -58,13 +62,14 @@
     text-indent: 10px;
     line-height: 42px;
   }
-  .sidebar-nav > li a {
+  .sidebar-nav > li a{
     display: block;
     text-decoration: none;
     color: var(--color-white);
     font-size: 15px;
     transition:all 0.5s ease-in-out ;
   }
+
   .sidebar-nav > li > a:hover,
   .sidebar-nav > li.active > a ,
   .sidebar-nav>li > div.dropdown:hover{

@@ -1,11 +1,14 @@
   {% extends './dashboard.html' %}
+
   
-    <section id="content-wrapper">
-        <div class="row">
+  {% block content %}
+  <section id="content-wrapper">
+    <div class="row">
           <div class="col-lg-12">
             <h2 class="content-title">Admin Home</h2>
             {% lorem 1 b random %}
           </div>
         </div>
-    </section>
-  </div>
+      </section>
+    </div>
+    {% endblock content %}
