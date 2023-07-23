@@ -24,6 +24,10 @@
     color: var(--color-primary);
     font-size: 13px !important;
 }
+.text-small-sm{
+    color: var(--color-primary);
+    font-size: 8px !important;
+}
 .text-black{
     color:var(--color-dark);
 }
