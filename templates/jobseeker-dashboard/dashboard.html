@@ -9,7 +9,9 @@
         {% include './components/navbar.html' %}    
     {% endblock navbar %}
     {% comment %} Navigation bar ends here {% endcomment %}
-
+    {% block left-sidebar %}
+        {% include './components/profile.html' %}
+    {% endblock left-sidebar %}
 
 
 {% include '../base/footer.html' %}
