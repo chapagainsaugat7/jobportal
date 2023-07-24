@@ -27,3 +27,10 @@
    top:4rem !important;
     left: -106px !important;
 }
+
+.img-rounded{
+    height: 150px !important;
+    width: 150px !important;
+    border-radius: 50% !important;
+    object-fit: cover;
+}
