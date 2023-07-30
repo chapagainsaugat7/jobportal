@@ -35,6 +35,9 @@
     color:var(--color-primary) !important;
     
 }
+.hide{
+    display:  none !important;
+}
 .text-black-bolder{
     color:var(--color-dark) !important;
     font-weight: 800 !important;
@@ -222,7 +225,7 @@ a[target='_blank'] {
     transition: all 0.1s ease-in-out
 }
 
-.bordert {
+.border {
     border-top: 1px solid #aaa;
     position: relative
 }

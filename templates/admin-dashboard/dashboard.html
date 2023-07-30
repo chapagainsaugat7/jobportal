@@ -1,18 +1,4 @@
-{% include '../base/base.html' %}
+{% include '../base/header.html' %}
 
-{% block content %}
-  {% include './sidebar.html' %}  
-{% endblock content %}
-
-{% block script %}
- <script>
-    const button  = document.querySelector('#sidebar-toggle');
-    const wrapper = document.querySelector('#wrapper');
-
-    button.addEventListener('click', (e) => {
-    e.preventDefault();
-    wrapper.classList.toggle('toggled');
-    });
- </script>
-{% endblock script %}
+{% include '../base/footer.html' %}
 

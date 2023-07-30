@@ -140,12 +140,12 @@ span{
     
     #wrapper.toggled #navbar-wrapper {
       position: absolute;
-      margin-right: -190px;
+      margin-right: -200px;
   }
     
     #wrapper.toggled #content-wrapper {
       position: absolute;
-      margin-right: -190px;
+      margin-right: -200px;
     }
   
     #navbar-wrapper {
@@ -179,12 +179,12 @@ span{
     
   #wrapper.toggled #navbar-wrapper {
       position: absolute;
-      margin-right: -250px;
+      margin-right: -255px;
   }
     
     #wrapper.toggled #content-wrapper {
       position: absolute;
-      margin-right: -250px;
+      margin-right: -255px;
     }
   
     #navbar-wrapper {
@@ -192,7 +192,7 @@ span{
     }
   
     #wrapper.toggled {
-      padding-left: 250px;
+      padding-left: 255px;
     }
   
     #content-wrapper {
@@ -203,7 +203,7 @@ span{
     #wrapper.toggled #navbar-wrapper,
     #wrapper.toggled #content-wrapper {
       position: relative;
-      margin-right: 250px;
+      margin-right: 255px;
     }
   }
   
@@ -217,16 +217,16 @@ span{
     }
   
     #wrapper.toggled #sidebar-wrapper {
-      width: 250px;
+      width: 255px;
     }
     #wrapper.toggled #navbar-wrapper {
       position: absolute;
-      margin-right: -250px;
+      margin-right: -255px;
     }
   
     #wrapper.toggled #content-wrapper {
       position: absolute;
-      margin-right: -250px;
+      margin-right: -255px;
     }
   
     #navbar-wrapper {
@@ -234,7 +234,7 @@ span{
     }
   
     #wrapper.toggled {
-      padding-left: 250px;
+      padding-left: 255px;
     }
   
     #content-wrapper {
@@ -245,6 +245,6 @@ span{
     #wrapper.toggled #navbar-wrapper,
     #wrapper.toggled #content-wrapper {
       position: relative;
-      margin-right: 250px;
+      margin-right: 255px;
     }
   }
