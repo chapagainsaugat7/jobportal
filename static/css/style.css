@@ -35,6 +35,29 @@
     color:var(--color-primary) !important;
     
 }
+.text-black-bolder{
+    color:var(--color-dark) !important;
+    font-weight: 800 !important;
+    font-size:2rem !important;
+}
+.text-justified{
+    text-align: justify !important;
+    text-justify: inter-word !important;
+}
+.custom-border{
+    border-top: 1px solid var(--color-dark) !important;
+    border-right: 1px solid var(--color-dark) !important;
+    border-bottom: 1px solid var(--color-dark) !important;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+.custom-border-ii{
+    border-top: 1px solid var(--color-dark) !important;
+    border-left: 1px solid var(--color-dark)  !important;
+    border-bottom: 1px solid var(--color-dark) !important;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
 a{
     text-decoration: none !important;
 }
@@ -104,6 +127,12 @@ a{
 .section-title{
     text-align: center !important;
     padding-bottom: 30px !important;
+}
+
+
+.bg-purple{
+    background-color: var(--color-primary) !important;
+    color:black !important;
 }
 
 /* Making horizontal line below title. */
