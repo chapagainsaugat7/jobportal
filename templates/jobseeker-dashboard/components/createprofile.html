@@ -1,0 +1,45 @@
+{% extends '../dashboard.html' %}
+
+{%block content%}
+    <div class="container my-5 border">
+        <div class="p-2 d-flex justify-content-between border-bottom">
+            <span class="mx-1 fw-bold">Create Profile</span>
+            <span class="bg-purple p-1 rounded text-light cursor-pointer text-white" data-bs-toggle="modal" data-bs-target="#previewProfile">
+                Preview
+            </span>
+        </div>
+        <div class="row">
+            <div class="col-md-4 border-right">
+                <ul class="list-group">
+                    <li class="list-group-item">A second item</li>
+                    <li class="list-group-item">A third item</li>
+                    <li class="list-group-item">A fourth item</li>
+                    <li class="list-group-item">And a fifth one</li>
+                </ul>
+            </div>
+            <div class="col-md-8 border-left">
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora expedita ipsam nesciunt illum nemo exercitationem maxime ducimus recusandae dolores amet error quasi, quaerat nisi nihil aliquam hic officia non. Sunt?
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="previewProfile" tabindex="-1" aria-labelledby="previewProfile" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Your Profile</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn bg-purple text-white">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+{%endblock content%}
