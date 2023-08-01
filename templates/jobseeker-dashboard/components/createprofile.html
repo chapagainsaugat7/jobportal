@@ -9,12 +9,12 @@
             </span>
         </div>
         <div class="row">
-            <div class="col-md-4 border-right">
-                <ul class="list-group">
-                    <li class="list-group-item">A second item</li>
-                    <li class="list-group-item">A third item</li>
-                    <li class="list-group-item">A fourth item</li>
-                    <li class="list-group-item">And a fifth one</li>
+          <div class="col-md-4 border-right">
+            <ul class="list-group">
+                 
+                  {% for item in nav_items %}
+                  <li class="list-group-item cursor-pointer">{{item}}</li>
+                  {% endfor %}
                 </ul>
             </div>
             <div class="col-md-8 border-left">

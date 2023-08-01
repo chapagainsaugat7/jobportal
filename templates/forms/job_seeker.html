@@ -1,4 +1,4 @@
-{% include '../base/base.html' %}
+{% extends '../base/base.html' %}
 
 {% block navbar %}
 <nav class="navbar navbar-expand-lg bg-body-tertiary" style="border-bottom: 1px solid #832bf0;">
@@ -28,62 +28,62 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="email" class="form-control" id="employer_name" placeholder="Employer's Name" required>
+                        <input type="email" class="form-control" name="emp_name" id="jobseeker_name" placeholder="Employer's Name" required>
                         <label for="employer_name">Full Name</label>
-                     </div>
+                        <span id="nameError" class="text-small text-danger fw-bold d-none"></span>
+                        
+                      </div>
                     </div>
-
+                    
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="text" class="form-control" id="phone_number" placeholder="Employer's number" required>
+                        <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Employer's number" required>
                         <label for="phone_numner">Phone Number</label>
+                        <span id="phoneError" class="text-small text-danger fw-bold d-none"></span>
+
                      </div>
                     </div>
                     
                     <div class="d-flex flex-row align-items-center mb-4">
                         <i class="fas fa-check fa-lg me-3 fa-fw"></i>
-                    <select class="form-select" aria-label="Types of company">
-                        <option selected>Select preffered job category</option>
-                        <option value="1">IT</option>
-                        <option value="2">Education</option>
-                        <option value="3">Aru kei</option>
+                    <select class="form-select" id="company_type" name="comp_type" aria-label="Types of company" required>
+                        <option value="">Select preffered job category</option>
+                        <option value="IT">IT</option>
+                        <option value="Education">Education</option>
+                        {% comment %} <option value="3">Aru kei</option> {% endcomment %}
                       </select>
                       </div>
   
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="email" class="form-control" id="email" placeholder="example@example.com" required>
+                        <input type="email" class="form-control" name="job_seeker_email_address" id="email" placeholder="example@example.com" required>
                         <label for="email">Email address</label>
+                        <span id="emailError" class="text-small text-danger fw-bold d-none">Hel</span>
                       </div>
                     </div>
   
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="password" class="form-control" id="password" placeholder="Password" required>
+                        <input type="password" class="form-control" name="job_seeker_password" id="password" placeholder="Password" required>
                         <label for="password">Password</label>
+                        <span id="passwordError" class="text-small text-danger fw-bold d-none">Hel</span>
                       </div>
                     </div>
   
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-key fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="password" id="confirm_password" class="form-control" placeholder="Repeat your password" required />
+                        <input type="password" id="confirm_password" name="job_confirm_password" class="form-control" placeholder="Repeat your password" required />
                         <label  for="confirm_password">Repeat Your Password</label>
+                        <span id="cpasswordError" class="text-small text-danger fw-bold d-none">Hel</span>
                       </div>
                     </div>
   
-                    <div class="form-check d-flex justify-content-center mb-5">
-                      <input class="form-check-input me-2 border border-black" type="checkbox" value="" id="tos" required />
-                      <label class="form-check-label" for="tos">
-                        I agree all statements in <a href="#!">Terms of service</a>
-                      </label>
-                    </div>
-  
                     <div class="d-flex justify-content-start mx-4 mb-3 mb-lg-4">
-                      <button type="submit" class="btn button py-2">Register</button>
+                      <button type="submit" id="register" class="btn button py-2">Register</button>
                     </div>
   
                   </form>
@@ -108,6 +108,138 @@
   </section>
 {% endblock %}
 
+{%block script%}
+  <script>
+      $(document).ready(function(){
+        $('#register').on('click', function(e){
+          e.preventDefault();
+          const name = $('#jobseeker_name').val();
+          const phone_number = $('#phone_number').val();
+          const preference = $('#company_type').val();
+          const email = $('#email').val();
+          const password = $('#password').val();
+          const confirm_password = $('#confirm_password').val();
+
+          validateForm(name,phone_number,email,password);
+
+        })
+      })
+      // Set border red if field is invalid while validation.
+      const setBorderRedIfInvalid = (id)=>{
+          const element = document.getElementById(id);
+          element.classList.add('invalid');
+          element.classList.remove('valid');
+      }
+
+      //set border green if field is valid.
+      const setBorderIfValid = (id)=>{
+        const element = document.getElementById(id);
+        element.classList.remove('invalid');
+        element.classList.add('valid');
+      }
+
+      //Show error message.
+      const showErrorMessage = (id,message)=>{
+        const element = document.getElementById(id);
+        element.innerText = message;
+        element.classList.add('d-block');
+        element.classList.remove('d-none');
+      }
+      // remove error message
+      const removeErrorMessage = (id)=>{
+        const element = document.getElementById(id);
+        element.innerText = '';
+        element.classList.add('d-none');
+        element.classList.remove('d-block');
+      }
+
+      //check if password and confirm password values are matched or not.
+      const checkPassword = (password,confirm_password) =>{
+        if(password == confirm_password){
+          return true;
+        }else{
+          return false;
+        }
+      }
+      //Form validation.
+      const validateForm = (name,number,email,password)=>{
+        const regexName =  /^[A-Za-z\s]+$/
+        const numberRegex = /^\d{10}$/;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()-_=+[\]{}|;:'",.<>?`~]).{5,}$/;
+        /*-----------Validate Name---------------------*/
+        var nameValid = false;
+        var numeberValid = false;
+        var emailValid = false;
+        var passwordValid = false;
+        if(name == ''){
+          setBorderRedIfInvalid('jobseeker_name');
+          showErrorMessage('nameError',"Please enter name.")
+        }
+        else if(name.length<4 || !matchRegex(regexName,name)){
+          setBorderRedIfInvalid('jobseeker_name');
+          showErrorMessage('nameError',"Please enter a valid name.")
+        }else{
+          setBorderIfValid('jobseeker_name');
+          removeErrorMessage('nameError');
+           nameValid = true;
+        }
+        /*-----------Validate Number---------------------*/
+        if(number == ''){
+          setBorderRedIfInvalid('phone_number');
+          showErrorMessage('phoneError',"Please enter your number.")
+        }
+        else if(!matchRegex(numberRegex,number)){
+          setBorderRedIfInvalid('phone_number');
+          showErrorMessage('phoneError',"Please enter a valid contact number.")
+        }else{
+          setBorderIfValid('phone_number');
+          removeErrorMessage('phoneError');
+          numeberValid = true;
+        }
+        /*----------------Validate Email -----------------*/
+        if(email == ''){
+          setBorderRedIfInvalid('email');
+          showErrorMessage('emailError',"Please enter email address.")
+        }else if(!matchRegex(emailRegex,email)){
+          setBorderRedIfInvalid('email');
+          showErrorMessage('emailError',"Please enter valid email address.(gmail only)")
+        }else{
+          setBorderIfValid('email');
+          removeErrorMessage('emailError');
+          emailValid = true;
+        }
+        /*---------------Validate Password ---------------------*/
+        if(password == '' || !matchRegex(passwordRegex,password)){
+          setBorderRedIfInvalid('password');
+          showErrorMessage('passwordError',"Please enter a strong password.");
+        }else{
+
+          setBorderIfValid('password');
+          removeErrorMessage('passwordError');
+        }
+        /*------------------Check if password match or not ------------*/
+        if(checkPassword(password,confirm_password)){
+          setBorderIfValid('confirm_password');
+          removeErrorMessage('cpasswordError');
+        }else{
+          setBorderRedIfInvalid('confirm_password');
+          showErrorMessage('cpasswordError',"Password not matched.");
+          passwordValid = true;
+        }
+
+        if(nameValid && emailValid && numeberValid && passwordValid){
+          return true;
+        }else{
+          return false;
+        }
+      }
+      // Match regex with string.
+      const matchRegex = (regExp,value)=>{
+        return regExp.test(value);    
+      }
+  </script>
+{% endblock script %}
 {%block footer%}
   {% include '../components/footer.html'%}
 {%endblock%}

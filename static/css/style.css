@@ -10,6 +10,7 @@
     --color-dark:#14213d;
     --color-grey:#a1a1a1;
     --color-white:#fff;
+    --color-green:#00FF00;
 }
 
 
@@ -20,7 +21,12 @@
     color: var(--color-primary);
 
 }
-
+.invalid{
+    border-color: var(--color-red) !important;
+}
+.valid{
+    border-color:var(--color-green) !important;
+}
 .bg-primary{
     background-color: var(--color-primary) !important;
 }

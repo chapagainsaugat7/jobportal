@@ -13,7 +13,8 @@ def jobseeker_dashboard(request):
     return render(request,'jobseeker-dashboard/dashboard.html')
 
 def create_profile(request):
-    return render(request,"jobseeker-dashboard/components/createprofile.html")
+    nav_items = ["Home","Qualification","Preferences"]
+    return render(request,"jobseeker-dashboard/components/createprofile.html",{"nav_items":nav_items})
 
 
 def profile(request):
