@@ -6,10 +6,10 @@ def home(request):
     return render(request,'index.html')
 
 
-def admin(request):
+def admin_login(request):
     return render(request,'admin-dashboard/adminlogin.html')
 
-def admin_test(request):
+def dashboard(request):
     return render(request,'admin-dashboard/dashboard.html')
 
 

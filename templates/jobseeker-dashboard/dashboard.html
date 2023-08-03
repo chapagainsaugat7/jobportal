@@ -1,0 +1,15 @@
+{% include '../base/header.html' %}
+    {% block style %}
+        {% load static %}
+        <link rel="stylesheet" href="{%static 'css/jobseeker.css'%}">
+    {% endblock style %}
+
+    {% comment %} Navigation bar starts here {% endcomment %}
+    {% block navbar %}
+        {% include './components/navbar.html' %}    
+    {% endblock navbar %}
+    {% comment %} Navigation bar ends here {% endcomment %}
+    {%block content%}
+    {%endblock content%}
+
+{% include '../base/footer.html' %}

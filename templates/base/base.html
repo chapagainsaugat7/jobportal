@@ -1,10 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
 {% include './header.html' %}
-
+<body>
     {% block navbar%}{%endblock%}
     {% block content%}{%endblock%}
     {% block testimonials %}{% endblock testimonials %}
     {% block footer%}{%endblock%}
+    
+    
+    {% include './footer.html' %}
     {% block script%}{%endblock%}
-
-
-{% include './footer.html' %}
+</body>
+</html>

@@ -10,6 +10,7 @@
     --color-dark:#14213d;
     --color-grey:#a1a1a1;
     --color-white:#fff;
+    --color-green:#00FF00;
 }
 
 
@@ -20,11 +21,62 @@
     color: var(--color-primary);
 
 }
+.invalid{
+    border-color: var(--color-red) !important;
+}
+.valid{
+    border-color:var(--color-green) !important;
+}
+.bg-primary{
+    background-color: var(--color-primary) !important;
+}
 .text-small{
     color: var(--color-primary);
     font-size: 13px !important;
-
 }
+.text-small-sm{
+    color: var(--color-primary);
+    font-size: 8px !important;
+}
+.text-black{
+    color:var(--color-dark);
+}
+.text-purple{
+    color:var(--color-primary) !important;
+    
+}
+
+.text-black-bolder{
+    color:var(--color-dark) !important;
+    font-weight: 800 !important;
+    font-size:2rem !important;
+}
+.text-justified{
+    text-align: justify !important;
+    text-justify: inter-word !important;
+}
+.custom-border{
+    border-top: 1px solid var(--color-dark) !important;
+    border-right: 1px solid var(--color-dark) !important;
+    border-bottom: 1px solid var(--color-dark) !important;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+.custom-border-ii{
+    border-top: 1px solid var(--color-dark) !important;
+    border-left: 1px solid var(--color-dark)  !important;
+    border-bottom: 1px solid var(--color-dark) !important;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+/* Borders on small screen */
+@media only screen and(max-width:769px){
+    .custom-border,.custom-border-ii{
+        border: 1px solid black !important;
+        border-radius: 10px;
+    }
+}
+
 a{
     text-decoration: none !important;
 }
@@ -86,14 +138,20 @@ a{
 .nav-item{
     margin-left:1rem !important;
 }
-.nav-link{
+/* .nav-link{
     margin-bottom: 10px !important;
 }
-
+ */
 
 .section-title{
     text-align: center !important;
     padding-bottom: 30px !important;
+}
+
+
+.bg-purple{
+    background-color: var(--color-primary) !important;
+    color:black !important;
 }
 
 /* Making horizontal line below title. */
@@ -199,9 +257,9 @@ a[target='_blank'] {
         height: 100%
     }
 
-    .container {
+    /* .container {
         margin: 30px 0
-    }
+    } */
 
     .bordert:after {
         left: 25%

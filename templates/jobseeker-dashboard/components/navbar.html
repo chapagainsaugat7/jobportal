@@ -1,0 +1,42 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary shadow">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-uppercase" href="{% url 'jobseeker-dashboard' %}">JobSeeker Area</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse mt-2" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link fw-medium" href="">Browse Jobs</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a href="{% url 'jobseeker-dashboard' %}" class="nav-link fw-medium">Overview</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'profile' %}" class="nav-link fw-medium">My Profile</a>
+            </li>
+            {% comment %} <li class="nav-item">
+                <a href="{% url 'create-profile' %}" class="nav-link fw-medium">Create Profile</a>
+            </li> {% endcomment %}
+            <li class="nav-item">
+                <a href="#" class="nav-link fw-medium">Settings</a>
+            </li>
+            <li class="nav-item">
+                <div class="dropdown">
+                    <a class="dropdown-toggle nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://media.istockphoto.com/id/906808234/photo/handsome-man.jpg?s=612x612&w=0&k=20&c=Ec8IY-ETslaS56vmO77BJyEOpPM1hzJlLbs6xeKRoAc=" alt="User Image" class="image-responsive">
+                    </a>
+                    
+                    <ul class="dropdown-menu dropdown-menu-right p-0" style="width:fit-content;">
+                        <li><a class="dropdown-item" href="#">email@example.com</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                    </ul>
+                </div>
+            </li>
+
+        </ul>
+      </div>
+    </div>
+  </nav>

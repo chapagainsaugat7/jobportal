@@ -1,18 +1,23 @@
-{% include '../base/base.html' %}
-
-{% block content %}
-  {% include './sidebar.html' %}  
-{% endblock content %}
+{% extends '../base/base.html' %}
+{% block navbar %}
+  {% include './sidebar.html' %}
+{% endblock navbar %}
 
 {% block script %}
- <script>
-    const button  = document.querySelector('#sidebar-toggle');
-    const wrapper = document.querySelector('#wrapper');
-
-    button.addEventListener('click', (e) => {
-    e.preventDefault();
-    wrapper.classList.toggle('toggled');
-    });
- </script>
+<script>
+  var pathName = window.location.pathname;
+  if(pathName == "/jobportal-admin"){
+    var styles = document.createElement("link");
+    styles.rel = "stylesheet"
+    styles.type = "text/css"
+    styles.href = "static/css/dashboard.css"
+    document.getElementsByTagName("head")[0].appendChild(styles);
+  }
+</script>
 {% endblock script %}
+
+
+
+
+
 
