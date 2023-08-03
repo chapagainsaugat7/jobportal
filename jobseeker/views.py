@@ -4,6 +4,18 @@ from django.shortcuts import render
 
 
 def register_job_seeker(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        phone_number = request.POST.get('phone')
+        job_preference = request.POST.get('job_preference')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        print(name)
+        print(phone_number)
+        print(job_preference)
+        print(email)
+        print(password)
     return render(request,'forms/job_seeker.html')
 
 def login(request):
