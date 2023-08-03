@@ -23,7 +23,8 @@
   
                   <p class="text-center h1 fw-bold mb-3 mx-1 mx-md-3 mt-2">Sign up</p>
   
-                  <form class="mx-1 mx-md-4">
+                  <form class="mx-1 mx-md-4" method="POST">
+                    {%csrf_token%}
   
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-user fa-lg me-3 fa-fw"></i>
@@ -119,8 +120,27 @@
           const email = $('#email').val();
           const password = $('#password').val();
           const confirm_password = $('#confirm_password').val();
+          const csrf = $('input[name=csrfmiddlewaretoken]').val();
 
-          validateForm(name,phone_number,email,password);
+          if(validateForm(name,phone_number,email,password,confirm_password)){
+            data = {name:name,
+              phone:phone_number,
+              job_preference:preference,
+              email:email,
+              password:password,
+              csrfmiddlewaretoken:csrf
+            };
+            $.ajax({
+              url:'{% url "register_jobseeker" %}',
+              method:"POST",
+              data:data,
+              success:function(data){
+                console.log("data");
+              }
+            })
+          }else{
+            console.log("Check validator once please.")
+          }
 
         })
       })
@@ -162,14 +182,14 @@
         }
       }
       //Form validation.
-      const validateForm = (name,number,email,password)=>{
+      const validateForm = (name,number,email,password,confirm_password)=>{
         const regexName =  /^[A-Za-z\s]+$/
         const numberRegex = /^\d{10}$/;
         const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()-_=+[\]{}|;:'",.<>?`~]).{5,}$/;
         /*-----------Validate Name---------------------*/
         var nameValid = false;
-        var numeberValid = false;
+        var numberValid = false;
         var emailValid = false;
         var passwordValid = false;
         if(name == ''){
@@ -195,7 +215,7 @@
         }else{
           setBorderIfValid('phone_number');
           removeErrorMessage('phoneError');
-          numeberValid = true;
+          numberValid = true;
         }
         /*----------------Validate Email -----------------*/
         if(email == ''){
@@ -222,13 +242,13 @@
         if(checkPassword(password,confirm_password)){
           setBorderIfValid('confirm_password');
           removeErrorMessage('cpasswordError');
+          passwordValid = true;
         }else{
           setBorderRedIfInvalid('confirm_password');
           showErrorMessage('cpasswordError',"Password not matched.");
-          passwordValid = true;
         }
-
-        if(nameValid && emailValid && numeberValid && passwordValid){
+          // console.log(nameValid,emailValid,numberValid,passwordValid)
+        if(nameValid && emailValid && numberValid && passwordValid){
           return true;
         }else{
           return false;
