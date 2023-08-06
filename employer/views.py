@@ -6,16 +6,12 @@ def register_employer(request):
     if request.method == 'POST':
         # name number email, type_of_hiring,password
         name = request.POST.get('name')
-        number = request.POST.get('phone')
+        number = request.POST.get('number')
         email = request.POST.get('email')
         type_of_hiring = request.POST.get('type_of_hiring')
         password = request.POST.get('password')
 
-        print(name)
-        print(number)
-        print(email)
-        print(type_of_hiring)
-        print(password)
+        
 
     return render(request,'forms/employer.html')
 

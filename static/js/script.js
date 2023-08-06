@@ -22,8 +22,9 @@ $('document').ready(function(){
             password:password,
             csrfmiddlewaretoken:csrf
           };
+      
           $.ajax({
-            url:"{% url 'register_jobseeker' %}",
+            url:"/jobseeker/register-job-seeker/",
             method:"POST",
             data:data,
             success:function(data){
@@ -39,31 +40,30 @@ $('document').ready(function(){
     $('#register_employer').on('click',function(event){
       event.preventDefault();
       const name = $('#employer_name').val();
-      console.log(name);
-      const number = $('#employer_number').val();
+      const phone_number = $('#employer_number').val();
       const type_of_hiring = $('#type_of_hiring').val();
       const email = $('#employer_email').val();
       const password = $('#employer_password').val();
       const confirm_password = $('#confirm_password').val();
-      const csrf = $('input[name=csrfmiddlewaretoken]').val();
+      const csrf_token = $('input[name=csrfmiddlewaretoken]').val();
      
-      if(validateEmployerForm(name,number,email,password,confirm_password)){
+      if(validateEmployerForm(name,phone_number,email,password,confirm_password)){
         data = {
           name:name,
-          number:number,
+          number:phone_number,
           email:email,
           type_of_hiring:type_of_hiring,
           password:password,
-          csrf:csrf
-        }
+          csrfmiddlewaretoken:csrf_token
+        };
 
         
         $.ajax({
-          url:'{% url "employer_registration" %}',
+          url:'/employer/register_employer/',
           method:"POST",
           data:data,
-          success:function(){
-            console.log("Data successfully sent.");
+          success:function(data){
+            
           },
           error:function(){
             console.log("Error occured.");
@@ -199,6 +199,7 @@ $('document').ready(function(){
       }else{
         setBorderIfValid('employer_name')
         removeErrorMessage('nameError')
+        nameValid = true
       }
       // Validate number.
       if(number == ''){
@@ -212,6 +213,7 @@ $('document').ready(function(){
       else{
         setBorderIfValid('employer_number')
         removeErrorMessage('phoneError')
+        numberValid = true
       }
      
       if(email == ''){
@@ -224,6 +226,7 @@ $('document').ready(function(){
       }else{
         setBorderIfValid("employer_email")
         removeErrorMessage("emailError")
+        emailValid = true;
       }
       
       // Password validation
@@ -239,9 +242,17 @@ $('document').ready(function(){
       if(checkPassword(password,confirm_password)){
         setBorderIfValid('confirm_password')
         removeErrorMessage('cpasswordError')
+        passwordValid = true;
       }else{
+
         showErrorMessage('cpasswordError',"Password doesn't matched.")
         setBorderRedIfInvalid('confirm_password')
+
+      }
+      if(nameValid && emailValid && numberValid && passwordValid){
+        return true
+      }else{
+        return false
       }
     }
 
