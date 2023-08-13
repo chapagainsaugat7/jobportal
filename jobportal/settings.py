@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'fontawesomefree',
     'core',
     'jobseeker',
+    'employer',
 ]
 
 MIDDLEWARE = [
