@@ -28,7 +28,10 @@ $('document').ready(function(){
             method:"POST",
             data:data,
             success:function(data){
-              console.log("data");
+              console.log(data);
+            },
+            error:function(){
+              console.log("Something went wrong.")
             }
           })
         }else{
@@ -63,14 +66,14 @@ $('document').ready(function(){
           method:"POST",
           data:data,
           success:function(data){
-            
+              console.log(data.ok)
           },
           error:function(){
             console.log("Error occured.");
           }
         })
       }else{
-        // ............
+        // 
       }
 
     })
