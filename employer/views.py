@@ -1,6 +1,10 @@
 from django.shortcuts import render,redirect
-from .models import Job
+from django.http import JsonResponse
+from .models import Employer
 # Create your views here.
+
+
+
 
 def register_employer(request):
 
@@ -9,14 +13,24 @@ def register_employer(request):
         name = request.POST.get('name')
         number = request.POST.get('number')
         email = request.POST.get('email')
-        type_of_hiring = request.POST.get('type_of_hiring')
         password = request.POST.get('password')
 
-        message = ''
-        if name or number or email or type_of_hiring or password == '':
-            message = "Please fill all fields."
-            redirect('employer_registration',send_message = message)
+        # normaline email, 
+        normalized_email = email.lower()
+
+        if Employer.objects.filter(emp_email = normalized_email):
+           return JsonResponse({'email_exists':"Email Exists. Please try again with new email address."})
+           redirect('employer_registration')
+        else:
+            try:
+                employer = Employer(emp_name = name,emp_phone_number = number,emp_email = email,emp_password = password)
+                employer.save()
+                return JsonResponse({'ok':'Account successfully created.'})
+            except Exception as e:
+                return JsonResponse ({'error':'An error occured.'})
+                # print("Exception....")
             
+
     
     return render(request,'forms/employer.html')
 
