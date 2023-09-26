@@ -22,21 +22,16 @@ def register_employer(request):
         normalized_email = email.lower()
 
         if Employer.objects.filter(emp_email = normalized_email):
-           message = "Email is already taken."
            return JsonResponse({"message":"Email is taken"},status=406)
         else:
             try:
                 employer = Employer(emp_name = name,emp_phone_number = number,emp_email = normalized_email,emp_password = hashed_password)
                 employer.save()
-                messages.success(request,"Account Successfully created !")
-                print("Account Created.")
-                return redirect('employer_dashboard')
+                return JsonResponse({"message":"Account Created."},status=200)
             except Exception as e:
                 print(e)
-                return JsonResponse ({'error':'An error occured.'})
-                # print("Exception....")
+                return JsonResponse ({'error':'Internal Fault, Try again later.'},status=500)
 
-    
     return render(request,'forms/employer.html')
 
 
