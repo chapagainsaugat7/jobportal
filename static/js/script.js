@@ -44,7 +44,6 @@ $('document').ready(function(){
       event.preventDefault();
       const name = $('#employer_name').val();
       const phone_number = $('#employer_number').val();
-      const type_of_hiring = $('#type_of_hiring').val();
       const email = $('#employer_email').val();
       const password = $('#employer_password').val();
       const confirm_password = $('#confirm_password').val();
@@ -55,7 +54,6 @@ $('document').ready(function(){
           name:name,
           number:phone_number,
           email:email,
-          type_of_hiring:type_of_hiring,
           password:password,
           csrfmiddlewaretoken:csrf_token
         };
@@ -65,11 +63,18 @@ $('document').ready(function(){
           url:'/employer/register_employer/',
           method:"POST",
           data:data,
+          dataType:'json',
           success:function(data){
-              console.log(data.ok)
+            console.log("Success"+data.message)
           },
-          error:function(){
-            console.log("Error occured.");
+          error:function(data){
+            console.log(data)
+            if(data.status = 406){
+              alert(
+                "Email is already taken."
+              )
+            }          
+            
           }
         })
       }else{
