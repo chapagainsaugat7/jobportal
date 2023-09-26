@@ -64,17 +64,32 @@ $('document').ready(function(){
           method:"POST",
           data:data,
           dataType:'json',
-          success:function(data){
-            console.log("Success"+data.message)
+          success:function(res){
+            var message = res.message
+            Swal.fire({
+              icon:'success',
+              title:"Congratulations",
+              text:message,
+            }).then(()=>{
+              $("#employer_registration_form")[0].reset();
+            })
           },
-          error:function(data){
-            console.log(data)
-            if(data.status = 406){
-              alert(
-                "Email is already taken."
-              )
-            }          
-            
+          error:function(response){
+            // fetchResponse();
+            if(response.status == 406){
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "Email is Taken. Please use unique email address.",
+              })
+            }   
+            else if(response.status == 500){
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "An internal error occured. Please try again later.",
+              })
+            }       
           }
         })
       }else{
