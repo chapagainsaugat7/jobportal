@@ -68,14 +68,14 @@ $('document').ready(function(){
             var message = res.message
             Swal.fire({
               icon:'success',
-              title:"Congratulations",
               text:message,
             }).then(()=>{
-              $("#employer_registration_form")[0].reset();
+              $('#employer_registration_form')[0].reset()
+              window.location.replace('http://127.0.0.1:8000/employer/employer_dashboard')
+              window.location.reload();
             })
           },
           error:function(response){
-            // fetchResponse();
             if(response.status == 406){
               Swal.fire({
                 icon: 'error',
