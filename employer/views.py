@@ -18,24 +18,20 @@ def register_employer(request):
         number = request.POST.get('number')
         email = request.POST.get('email')
         password = request.POST.get('password')
+
+        normalized_email = email.lower();
         hashed_password = make_password(password)
-        normalized_email = email.lower()
 
         if Employer.objects.filter(emp_email = normalized_email):
-           return JsonResponse({"message":"Email is taken"},status=406)
+            return JsonResponse({"message":"Email already exists."},status = 406)
         
         else:
             employer = Employer(emp_name = name,emp_phone_number = number,emp_email = normalized_email,emp_password = hashed_password)
             try:
                 employer.save()
-                # logger.debug("Employer saved successfully.")
-                return redirect('employer_dashboard')
-            
+                return JsonResponse({"message":"Account Successfully created","email":normalized_email,"url":"employer_dashboard"},status=200)
             except Exception as e:
-
-                # logger.error(f"Error saving employer: {e}")
-
-                return JsonResponse ({'error':'Internal Fault, Try again later.'},status=500)
+                return JsonResponse({"message":"Internal Server Error."},status = 500)
 
     return render(request,'forms/employer.html')
 
