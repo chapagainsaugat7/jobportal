@@ -3,6 +3,11 @@ $('document').ready(function(){
   if ( window.history.replaceState ) {
       window.history.replaceState( null, null, window.location.href );
     }
+
+    // Handeling employer dashboard sidebar
+        $('[data-toggle=offcanvas]').click(function() {
+          $('.row-offcanvas').toggleClass('active');
+        });
   
       $('#register_jobseeker').on('click', function(event){
         const name = $('#jobseeker_name').val();
@@ -66,28 +71,29 @@ $('document').ready(function(){
           dataType:'json',
           success:function(res){
             var message = res.message
+            var url = res.url
             Swal.fire({
               icon:'success',
               text:message,
             }).then(()=>{
               $('#employer_registration_form')[0].reset()
-              window.location.replace('http://127.0.0.1:8000/employer/employer_dashboard')
-              window.location.reload();
+              window.location.url = url
             })
           },
           error:function(response){
+            var message = response.message
             if(response.status == 406){
               Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: "Email is Taken. Please use unique email address.",
+                text: message,
               })
             }   
             else if(response.status == 500){
               Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: "An internal error occured. Please try again later.",
+                text: message,
               })
             }       
           }
