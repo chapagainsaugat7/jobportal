@@ -1,0 +1,112 @@
+{% extends '../base/base.html' %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg bg-body-tertiary" style="border-bottom: 1px solid #832bf0;">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-uppercase" href="/">Online Job Portal
+
+          <span class="text-small text-purple">for Job Seekers</span>
+        </a>
+    </div>
+</nav>
+{% endblock navbar %}
+
+{% block content %}
+<section class="vh-100 mt-3 mb-8" style="background-color: white;">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-lg-12 col-xl-11">
+          <div class="card text-black" style="border-radius: 10px;">
+            <div class="card-body p-md-5">
+              <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-6 col-xl-5 order-1 order-lg-2">
+  
+                  <p class="text-center h1 fw-bold mb-3 mx-1 mx-md-3 mt-2">Sign up</p>
+  
+                  <form name="form" class="mx-1 mx-md-4" method="POST" >
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline form-floating flex-fill mb-0">
+                        <input type="email" class="form-control" name="emp_name" id="jobseeker_name" placeholder="Employer's Name" required>
+                        <label for="employer_name">Full Name</label>
+                        <span id="nameError" class="text-small text-danger fw-bold d-none"></span>
+                        
+                      </div>
+                    </div>
+                    
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline form-floating flex-fill mb-0">
+                        <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Employer's number" required>
+                        <label for="phone_numner">Phone Number</label>
+                        <span id="phoneError" class="text-small text-danger fw-bold d-none"></span>
+
+                     </div>
+                    </div>
+                    
+                    <div class="d-flex flex-row align-items-center mb-4">
+                        <i class="fas fa-check fa-lg me-3 fa-fw"></i>
+                    <select class="form-select" id="company_type" name="comp_type" aria-label="Types of company" required>
+                        <option value="">Select preffered job category</option>
+                        <option value="IT">IT</option>
+                        <option value="Education">Education</option>
+                        {% comment %} <option value="3">Aru kei</option> {% endcomment %}
+                      </select>
+                      </div>
+  
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline form-floating flex-fill mb-0">
+                        <input type="email" class="form-control" name="job_seeker_email_address" id="email" placeholder="example@example.com" required>
+                        <label for="email">Email address</label>
+                        <span id="emailError" class="text-small text-danger fw-bold d-none"></span>
+                      </div>
+                    </div>
+  
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline form-floating flex-fill mb-0">
+                        <input type="password" class="form-control" name="job_seeker_password" id="password" placeholder="Password" required>
+                        <label for="password">Password</label>
+                        <span id="passwordError" class="text-small text-danger fw-bold d-none"></span>
+                      </div>
+                    </div>
+  
+                    <div class="d-flex flex-row align-items-center mb-4">
+                      <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+                      <div class="form-outline form-floating flex-fill mb-0">
+                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Repeat your password" required />
+                        <label  for="confirm_password">Repeat Your Password</label>
+                        <span id="cpasswordError" class="text-small text-danger fw-bold d-none">Hel</span>
+                      </div>
+                    </div>
+  
+                    <div class="d-flex justify-content-start mx-4 mb-3 mb-lg-4">
+                      <button type="button" id="register_jobseeker" class="btn button py-2">Register</button>
+                    </div>
+  
+                  </form>
+                  <div>
+                      Already have an account? <a href="{% url 'jobseeker:login-job-seeker' %}">Login here.</a>
+                  </div>
+  
+                </div>
+                <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-2 order-lg-1">
+                    {% load static %}
+                  <img src="{% static 'images/jobseeker_banner.jpg' %}"
+                    class="img-fluid" alt="Sample image">
+                </div>
+
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{%block footer%}
+  {% include '../components/footer.html'%}
+{%endblock%}

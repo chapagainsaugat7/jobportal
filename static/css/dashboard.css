@@ -1,0 +1,135 @@
+@media (min-width: 991.98px) {
+    main {
+      padding-left: 240px;
+    }
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    padding: 58px 0 0; /* Height of navbar */
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+    width: 240px;
+    z-index: 600;
+  }
+  
+  @media (max-width: 991.98px) {
+    .sidebar {
+      width: 100%;
+    }
+  }
+  .sidebar .active {
+    border-radius: 5px;
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+  }
+  
+  .sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: 0.5rem;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  }
+
+  /*
+   * Off Canvas sidebar at medium breakpoint
+   * --------------------------------------------------
+   */
+  @media screen and (max-width: 992px) {
+  
+    .row-offcanvas {
+      position: relative;
+      -webkit-transition: all 0.25s ease-out;
+      -moz-transition: all 0.25s ease-out;
+      transition: all 0.25s ease-out;
+    }
+  
+    .row-offcanvas-left
+    .sidebar-offcanvas {
+      left: -33%;
+    }
+  
+    .row-offcanvas-left.active {
+      left: 33%;
+      margin-left: -6px;
+    }
+  
+    .sidebar-offcanvas {
+      position: absolute;
+      top: 0;
+      width: 33%;
+      height: 100%;
+    }
+  }
+  
+  /*
+   * Off Canvas wider at sm breakpoint
+   * --------------------------------------------------
+   */
+  @media screen and (max-width: 34em) {
+    .row-offcanvas-left
+    .sidebar-offcanvas {
+      left: -45%;
+    }
+  
+    .row-offcanvas-left.active {
+      left: 45%;
+      margin-left: -6px;
+    }
+    
+    .sidebar-offcanvas {
+      width: 45%;
+    }
+  }
+  
+  .card {
+      overflow:hidden;
+  }
+  
+  .card-body .rotate {
+      z-index: 8;
+      float: right;
+      height: 100%;
+  }
+  
+  .card-body .rotate i {
+      color: rgba(20, 20, 20, 0.15);
+      position: absolute;
+      left: 0;
+      left: auto;
+      right: -10px;
+      bottom: 0;
+      display: block;
+      -webkit-transform: rotate(-44deg);
+      -moz-transform: rotate(-44deg);
+      -o-transform: rotate(-44deg);
+      -ms-transform: rotate(-44deg);
+      transform: rotate(-44deg);
+  }
+  
+
+
+  @media screen and (max-width:769px){
+    .cards{
+      padding-top:1rem !important;
+    }
+    #sidebar{
+      padding-left: 0px;
+      height:100vh !important;
+      position: absolute;
+    }
+    .name{
+      display: none;
+    }
+    #content{
+      position: relative;
+      left: 0;
+    }
+    .sidebar.active + #content{
+      left: -200px !important;
+    }
+  }

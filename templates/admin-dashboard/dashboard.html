@@ -1,0 +1,23 @@
+{% extends '../base/base.html' %}
+{% block navbar %}
+  {% include './sidebar.html' %}
+{% endblock navbar %}
+
+{% block script %}
+<script>
+  var pathName = window.location.pathname;
+  if(pathName == "/jobportal-admin"){
+    var styles = document.createElement("link");
+    styles.rel = "stylesheet"
+    styles.type = "text/css"
+    styles.href = "static/css/dashboard.css"
+    document.getElementsByTagName("head")[0].appendChild(styles);
+  }
+</script>
+{% endblock script %}
+
+
+
+
+
+
