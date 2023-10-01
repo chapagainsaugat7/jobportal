@@ -20,13 +20,24 @@
             <div class="card-body p-md-5">
               <div class="row justify-content-center">
                 <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+
+                  {% if messages %}
+                  {% for message in messages %}
+                  <div class="container-fluid p-0">
+                    <div class="alert {{ message.tags }}" role="alert" >
+                      {{ message }}
+                    </div>
+                  </div>
+                  {% endfor %}
+                  {% endif %}
+
                   <p class="text-center h1 fw-bold mb-3 mx-1 mx-md-3 mt-2">Sign up</p>
-                  <form id="employer_registration_form" action="employer/register_employer/" class="mx-1 mx-md-4" method = "POST">
+                  <form id="employer_registration_form" action="{% url 'employer_registration' %}" class="mx-1 mx-md-4" method = "POST">
                     {% csrf_token %}
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="text" class="form-control" id="employer_name" placeholder="Employer's Name" required>
+                        <input type="text" class="form-control" id="employer_name" name="name" placeholder="Employer's Name" required>
                         <label for="employer_name">Employer's Name</label>
                         <span id="nameError" class="text-small text-danger fw-bold d-none"></span>
                      </div>
@@ -35,7 +46,7 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="text" class="form-control" id="employer_number" placeholder="Employer's number" required>
+                        <input type="text" class="form-control" id="employer_number" name="number" placeholder="Employer's number" required>
                         <label for="employer_number">Employer's Number</label>
                         <span id="phoneError" class="text-small text-danger fw-bold d-none"></span>
                       </div>
@@ -44,7 +55,7 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="email" class="form-control" id="employer_email" placeholder="example@example.com" required>
+                        <input type="email" class="form-control" id="employer_email" name="email" placeholder="example@example.com" required>
                         <label for="email">Email address</label>
                         <span id="emailError" class="text-small text-danger fw-bold d-none"></span>
 
@@ -54,22 +65,11 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="password" class="form-control" id="employer_password" placeholder="Password" required>
+                        <input type="password" class="form-control" id="employer_password" name="password" placeholder="Password" required>
                         <label for="password">Password</label>
                         <span id="passwordError" class="text-small text-danger fw-bold d-none"></span>
                       </div>
                     </div>
-  
-                    <div class="d-flex flex-row align-items-center mb-4">
-                      <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                      <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="password" id="confirm_password" class="form-control" placeholder="Repeat your password" required />
-                        <label  for="confirm_password">Repeat Your Password</label>
-                        <span id="cpasswordError" class="text-small text-danger fw-bold d-none"></span>
-
-                      </div>
-                    </div>
-  
   
                     <div class="d-flex justify-content-start mx-4 mb-3 mb-lg-4">
                       <button type="submit" id="register_employer" class="btn button py-2">Register</button>
@@ -96,6 +96,11 @@
   </section>
 {% endblock %}
 
+{% block script %}
+  {% load static %}
+  {% comment %} <script  src="{% static './js/utility.js'%}"></script> {% endcomment %}
+  <script type="module" src = "{% static './js/employer.js'%}" ></script>
+{% endblock script %}
 {%block footer%}
   {% include '../components/footer.html'%}
 {%endblock%}
