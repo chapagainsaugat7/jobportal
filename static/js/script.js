@@ -1,6 +1,5 @@
 $('document').ready(function(){
-
-  if ( window.history.replaceState ) {
+   if ( window.history.replaceState ) {
       window.history.replaceState( null, null, window.location.href );
     }
 
@@ -45,7 +44,12 @@ $('document').ready(function(){
 
       })
 
-    $('#register_employer').on('click',function(event){
+      // Refactoring existing script for validating data.
+      
+      
+
+      
+    /*$('#register_employer').on('click',function(event){
       event.preventDefault();
       const name = $('#employer_name').val();
       const phone_number = $('#employer_number').val();
@@ -102,7 +106,7 @@ $('document').ready(function(){
         // 
       }
 
-    })
+    })*/
     let nameValid = false;
     let numberValid = false;
     let emailValid = false;
@@ -261,7 +265,7 @@ $('document').ready(function(){
       // Password validation
       if(password == '' || !matchRegex(passwordRegex,password)){
         setBorderRedIfInvalid('employer_password')
-        showErrorMessage("passwordError","Password choose a strong password.")
+        showErrorMessage("passwordError","Please choose a strong password.")
         
       }else{
         setBorderIfValid("employer_password")
