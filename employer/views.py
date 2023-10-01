@@ -20,14 +20,28 @@ def register_employer(request):
         password = request.POST.get('password')
         normalized_email = email.lower();
         hashed_password = make_password(password)
+        
 
+        ''' 
+            check if email or phone number exists or not.
+        '''
+        email_exists = Employer.objects.filter(emp_email = normalized_email).exists()
+        phone_exists = Employer.objects.filter(emp_phone_number = number).exists()
 
-        if Employer.objects.filter(emp_email = normalized_email):
-            messages.error(request,"Email already exists.") 
-            return render(request,'forms/employer.html')                
-        elif Employer.objects.filter(emp_number = number):
-            messages.error(request,"Phone number already exists.")
-            return render(request,'forms/employer.html')
+        message = ''
+        if email_exists:
+            message = "Email is taken."
+
+        if phone_exists:
+            message = "Phone number is taken."
+
+        
+        if email_exists or phone_exists:
+            messages.error(request,message) 
+            return render(request,'forms/employer.html')     
+
+        else:
+            pass
     return render(request,'forms/employer.html')
 
 
