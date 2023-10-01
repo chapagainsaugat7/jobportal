@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
-from django.http import JsonResponse,HttpResponse
+from urllib.parse import urlencode
 from .models import Employer
 from django.contrib.auth.hashers import make_password,check_password
 
@@ -18,7 +18,7 @@ def register_employer(request):
         number = request.POST.get('number')
         email = request.POST.get('email')
         password = request.POST.get('password')
-        normalized_email = email.lower();
+        normalized_email = email.lower()
         hashed_password = make_password(password)
         
 
@@ -41,7 +41,25 @@ def register_employer(request):
             return render(request,'forms/employer.html')     
 
         else:
-            pass
+            #emp_name, emp_phone_number emp_email emp_password
+            employer = Employer(emp_name = name,emp_phone_number = number,emp_email = normalized_email,emp_password = hashed_password)
+            try:
+                '''
+                    save data into database
+                    set session variable and redirect to dashboard.
+                '''
+                employer.save()
+                request.session['email'] = normalized_email
+                # set session data, encode url and redirect to dashboard.
+                data = {'email': request.session.get('email')}
+                params = urlencode(data)
+                redirect_url = f'employer_dasboard/?{params}'
+                print(redirect_url)
+                return redirect(redirect_url)
+
+            except Exception as e:
+                pass
+
     return render(request,'forms/employer.html')
 
 
@@ -52,4 +70,10 @@ def employer_signin(request):
 
 
 def employer_dashboard(request):
-    return render(request,'employer-dashboard/index.html')
+    email = request.session.get('email')
+    if email:
+        data = Employer.objects.get(emp_email = email)
+        return render(request,'employer-dashboard/index.html',{'data':data})
+    else:
+        return redirect('employer_signin')
+    
