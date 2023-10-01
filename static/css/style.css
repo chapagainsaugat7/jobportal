@@ -27,6 +27,7 @@
 .valid{
     border-color:var(--color-green) !important;
 }
+
 .bg-primary{
     background-color: var(--color-primary) !important;
 }
