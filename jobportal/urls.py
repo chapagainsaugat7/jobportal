@@ -8,4 +8,4 @@ urlpatterns = [
     path('',include('core.urls')),
     path('jobseeker/',include('jobseeker.urls')),
     path('employer/',include('employer.urls')),
-]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
