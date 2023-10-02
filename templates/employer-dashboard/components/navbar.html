@@ -3,11 +3,40 @@
         <button type="button" class="navbar-toggler mx-2 mr-2 " data-toggle="offcanvas" title="Toggle responsive left sidebar">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand mx-5" href="#" title="Admin">Employer Area</a>
+        <a class="navbar-brand mx-5" href="{% url 'employer_dashboard' %}" title="Admin">Employer Area</a>
     </div>
-
+    
     <div class="ms-auto mx-4">
-        <a href="#" class="text-white name">John and Danny</a>
+        <a href="#" class="text-white mx-3 position-relative"  data-bs-toggle="modal" data-bs-target="#notifications">
+            <i class="fas fa-bell fs-5"></i>
+            {% if messages %}
+            <span class="bg-danger rounded-circle position-absolute top-0 start-100 mx-1 translate-middle badge rounded-pill">{{count}}</span>
+            {%endif%}
+        </a>
+        
+        <a href="#" class="text-white mx-2">{{emp_name}}</a>
     </div>
    
 </nav>
+
+  <!-- Modal -->
+  <div class="modal fade" id="notifications" tabindex="-1" aria-labelledby="notifications" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="notificationLabel">Notification</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+            {% if messages %}
+            <div class="p-0">
+                {% for message in messages %}
+                <div class="alert" role="alert" aria-live="assertive" aria-atomic="true">
+                  {{ message }}
+                </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
