@@ -110,23 +110,28 @@ def company_profile(request):
 
             normalized_email = email.lower()
             # Check if image is valid or not.
-            valid_image = False
             if image:
                 file_extension = image.name.split('.')[-1].lower()
-                print("File extensioon is:",file_extension)
+                print("File extension is:",file_extension)
                 allowed_extension = ['jpg','png','jpeg','svg']
                 if file_extension not in allowed_extension:
                     print("File extension not supported.")
                     messages.error(request,"Not supported file extension.")
+                    return redirect('company_profile')
                 else:
-                   valid_image = True
+                   print("File extension is valid.")
 
-            if valid_image:
-                try:
-                    pass
-
-                except Exception as e:
-                    pass
+            try:
+                #emp_name, emp_phone_number, emp_email, about_employer, emp_profile
+                Employer.objects.filter(emp_email = normalized_email).update(
+                    emp_name = name,
+                    emp_phone_number = phone,
+                    about_employer = about,
+                    emp_profile = image
+                )
+                print("Updated")
+            except Exception as e:
+                pass          
 
         data = Employer.objects.get(emp_email = email)
         return render(request,'employer-dashboard/components/employer-profile.html',{'data':data})
