@@ -9,7 +9,7 @@ class Employer(models.Model):
     emp_password = models.CharField(max_length=25,null=False,blank=False,verbose_name='Employer Password')
     about_employer = models.TextField(verbose_name='About Employer',blank=True,null=True)
     emp_profile = models.FileField(upload_to='employer-profile/',null=True,verbose_name='Profile Photo')
-
+    # emp_address = models.TextField(verbose_name='Address',null=False,blank=False,default="Birtamode")
     def __str__(self):
         return self.emp_name
     
