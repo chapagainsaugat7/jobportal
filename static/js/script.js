@@ -7,7 +7,11 @@ $('document').ready(function(){
         $('[data-toggle=offcanvas]').click(function() {
           $('.row-offcanvas').toggleClass('active');
         });
-  
+        
+        $('textarea').each(function(){
+                $(this).val($(this).val().trim());
+            }
+        );
       $('#register_jobseeker').on('click', function(event){
         const name = $('#jobseeker_name').val();
         const phone_number = $('#phone_number').val();
