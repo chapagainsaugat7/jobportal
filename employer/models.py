@@ -1,17 +1,21 @@
 from django.db import models
-
+from django.utils.html import format_html
 # Employer posts job has JobQuestions.
 class Employer(models.Model):
     emp_id = models.AutoField(primary_key=True)
     emp_name = models.CharField(max_length=50,null=False,blank=False,verbose_name='Employer name')
     emp_phone_number = models.CharField(max_length=11,null=False,blank=False,verbose_name='Employer number')
     emp_email = models.EmailField(verbose_name='Employer Email',null=False,blank=False,unique=True)
-    emp_password = models.CharField(max_length=25,null=False,blank=False,verbose_name='Employer Password')
+    emp_password = models.CharField(null=False,blank=False,verbose_name='Employer Password',max_length=255)
     about_employer = models.TextField(verbose_name='About Employer',blank=True,null=True)
     emp_profile = models.FileField(upload_to='employer-profile/',null=True,verbose_name='Profile Photo')
     # emp_address = models.TextField(verbose_name='Address',null=False,blank=False,default="Birtamode")
+    
     def __str__(self):
         return self.emp_name
+    
+    def image(self):
+                return format_html('<img src="/media/{}" height=30 width=30 style="border-radius:50%">'.format(self.emp_profile))
     
 
 LOCATION_TYPE = (
