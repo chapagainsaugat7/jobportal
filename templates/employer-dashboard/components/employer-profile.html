@@ -1,0 +1,36 @@
+{% extends "../index.html" %}
+{%block content%}
+<div class="row">
+    <form action="{% url 'company_profile' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="col-md-6">
+        <div class="alert alert-danger" role="alert">
+            <p class="text-red">Fill all empty fields</p>
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="name" class="form-control border border-primary" name="name" id="name" placeholder="Employer's name" value="{{data.emp_name}}">
+        </div>
+        <div class="mb-3">
+            <label for="emailAddress" class="form-label">Email Address</label>
+            <input class="form-control border border-primary" name="email" id="emailAddress" value="{{data.emp_email}}" />
+        </div>
+        <div class="mb-3">
+            <label for="phoneNumber" class="form-label">Phone Number</label>
+            <input class="form-control border border-primary" name="phone" id="phoneNumber" value="{{data.emp_phone_number}}" />
+        </div>
+        <div class="mb-3">
+            <label for="aboutEmployer" class="form-label">About Employer</label>
+            <textarea class="form-control border border-primary" name="about" id="aboutEmployer" rows="5" wrap="virtual">{{data.about_employer}}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="photo" class="form-label">Photo (png,jpeg,jpg only)</label>
+            <input type="file" class="form-control border border-primary" name="image" id="photo" value="{{data.emp_profile|default:''}}">
+        </div>
+        <div class="mb-3">
+            <input type="submit" class="btn btn-primary" value="Create Profile">
+        </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
