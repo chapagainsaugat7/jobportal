@@ -2,12 +2,15 @@
 <div class="row row-offcanvas row-offcanvas-left">
     <div class="col-md-3 col-lg-2 sidebar-offcanvas bg-primary" id="sidebar" role="navigation">
         <ul class="nav flex-column sticky-top pl-5 pt-5 fixed" style="height:100vh !important;">
-            <li class="nav-item"><a class="nav-link text-white " href="#">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link text-white" href="#">Company Profile</a></li>
+            <li class="nav-item"><a class="nav-link text-white " href="{% url 'employer_dashboard' %}">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{% url 'company_profile'%}">Company Profile</a></li>
             <li class="nav-item"><a class="nav-link text-white" href="#">Analytics</a></li>
             <li class="nav-item"><a class="nav-link text-white" href="#">Jobs</a></li>
             <li class="nav-item"><a class="nav-link text-white" href="#">Questions</a></li>
             <li class="nav-item"><a class="nav-link text-white" href="#">Applicants</a></li>
-            
+            {% comment %} <li class="nav-item"><a class="nav-link text-white" href="#">Log out</a></li> {% endcomment %}
+
         </ul>
+        
     </div>
+    <div class="col main pt-5 mt-3" id="content">
