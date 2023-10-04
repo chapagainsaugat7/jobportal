@@ -1,6 +1,13 @@
 from django.db import models
 from django.utils.html import format_html
-# Employer posts job has JobQuestions.
+import datetime,os
+
+def filepath(request,filename):
+     old_filename = filename
+     time_now = datetime.datetime.now().strftime("%Y%m%d%H:%M:%S")
+     filename  = "%s%s" % (time_now,old_filename)
+     return os.path.join('employer-profile/',filename)
+
 class Employer(models.Model):
     emp_id = models.AutoField(primary_key=True)
     emp_name = models.CharField(max_length=50,null=False,blank=False,verbose_name='Employer name')
@@ -8,8 +15,7 @@ class Employer(models.Model):
     emp_email = models.EmailField(verbose_name='Employer Email',null=False,blank=False,unique=True)
     emp_password = models.CharField(null=False,blank=False,verbose_name='Employer Password',max_length=255)
     about_employer = models.TextField(verbose_name='About Employer',blank=True,null=True)
-    emp_profile = models.FileField(upload_to='employer-profile/',null=True,verbose_name='Profile Photo')
-    # emp_address = models.TextField(verbose_name='Address',null=False,blank=False,default="Birtamode")
+    emp_profile = models.FileField(upload_to=filepath ,null=True,verbose_name='Profile Photo')
     
     def __str__(self):
         return self.emp_name
