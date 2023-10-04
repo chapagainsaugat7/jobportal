@@ -3,10 +3,11 @@ from django.contrib import messages
 from urllib.parse import urlencode
 from .models import Employer
 from django.contrib.auth.hashers import make_password,check_password
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 
-import logging
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 # Create your views here.
 
 
@@ -101,39 +102,34 @@ def company_profile(request):
 
     email = request.session.get('email')
     if email:
-        if request.method == 'POST' and request.FILES:
+        employer = Employer.objects.get(emp_email = email)
+        if request.method == 'POST':
+            if 'image' in request.FILES:
+                if employer.emp_profile:
+                    default_storage.delete(employer.emp_profile.path)
+                
+                image  = request.FILES['image']
+                employer.emp_profile.save(image.name,image)
+
             name = request.POST.get('name')
             email = request.POST.get('email')
             phone = request.POST.get('phone')
             about = request.POST.get('about')
-            image = request.FILES['image']
 
             normalized_email = email.lower()
-            # Check if image is valid or not.
-            if image:
-                file_extension = image.name.split('.')[-1].lower()
-                print("File extension is:",file_extension)
-                allowed_extension = ['jpg','png','jpeg','svg']
-                if file_extension not in allowed_extension:
-                    print("File extension not supported.")
-                    messages.error(request,"Not supported file extension.")
-                    return redirect('company_profile')
-                else:
-                   print("File extension is valid.")
-
+            employer.emp_name = name
+            employer.emp_email = normalized_email
+            employer.emp_phone_number = phone
+            employer.about_employer = about
+            
             try:
-                #emp_name, emp_phone_number, emp_email, about_employer, emp_profile
-                Employer.objects.filter(emp_email = normalized_email).update(
-                    emp_name = name,
-                    emp_phone_number = phone,
-                    about_employer = about,
-                    emp_profile = image
-                )
-                print("Updated")
+                employer.save()
+                messages.info(request,"Profile successfully updated.")
             except Exception as e:
-                pass          
+                print("Exception.....")
+            
 
-        data = Employer.objects.get(emp_email = email)
+        data = employer
         return render(request,'employer-dashboard/components/employer-profile.html',{'data':data})
     else:
         messages.error(request,"Session Expired. Please Login again.")
