@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.html import format_html
 import datetime,os
+from .utility import default_deadline
 
 def filepath(request,filename):
      old_filename = filename
@@ -42,9 +43,9 @@ class Job(models.Model):
     job_position = models.CharField(verbose_name="Position",max_length=100,null=False,blank=False)
     job_requirement = models.CharField(verbose_name="Requirements",max_length=100,null=False,blank=False)
     job_description = models.TextField(verbose_name="Description",null=False,blank=False)
-    salary = models.TextField(max_length=30,blank=True,null=True);
+    salary = models.TextField(max_length=30,blank=True,null=True)
     location_type = models.TextField(choices=LOCATION_TYPE,blank=False)
-
+    deadline = models.DateTimeField(blank=False,null=False,default=default_deadline)
 
     def __str__(self):
         return self.job_type
