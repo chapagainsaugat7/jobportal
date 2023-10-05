@@ -134,3 +134,21 @@ def company_profile(request):
     else:
         messages.error(request,"Session Expired. Please Login again.")
         return redirect('employer_signin')
+    
+
+def post_jobs(request):
+    email = request.session.get('email')
+    if email:
+        LOCATION_TYPE = (
+                            ('Hybrid',"Hybrid"),
+                            ('On Site',"On Site"),
+                            ('Online',"Online")
+                            )
+        JOB_TYPE = (
+                ('Full time',"Full Time"),
+                ('Part Time',"Part Time"),
+                ('Freelance',"Freelance")
+                )
+        data = Employer.objects.get(emp_email = email)
+        count = len([msg for msg in messages.get_messages(request) if msg.level == messages.INFO])
+        return render(request,'employer-dashboard/components/postjobs.html',{'data':data,'loc_type':LOCATION_TYPE,'job_type':JOB_TYPE})
