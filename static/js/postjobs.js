@@ -15,8 +15,51 @@ $(document).ready(function(){
       const requirement = $('#requirement').val()
       const description = $('#description').val()
       const salary = $('#salary').val()
-      const deadline = $('#deadline')
+      const deadline = $('#deadline').val()
       const loc_type = $('#loc_type').val()
-     
+      const csrf = $('input[name=csrfmiddlewaretoken]').val()
+      if (jobType === ''|| jobType==='Job Type' ||position === ''||requirement===''||description===''||salary===''||deadline===''||loc_type==='' || loc_type === 'Location Type'){
+        
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please Fill all fields.'
+        })
+    }else{
+        let data = {
+            type : jobType,
+            job_position : position,
+            job_requirement : requirement,
+            job_description : description,
+            job_salary : salary,
+            job_deadline:deadline,
+            location_type : loc_type,
+        }
+        $.ajax({
+            url:'',
+            method:"POST",
+            headers:{
+                "X-Requested-With": "XMLHttpRequest",
+                'Accept':'application/json',
+                'Content-Type':'application/json',
+                'X-CSRFToken':csrf
+            },
+            dataType:'json',
+            data:JSON.stringify(data),
+            success:function(res){
+                let message = res.message
+                if(res.status == 200){
+                    Swal.fire({
+                        icon:'success',
+                        title:'Success.',
+                        text: 'Please Fill all fields.'
+                        })
+                    }
+                },
+                error:function(res){
+                    console.log(`Error:{res}`);
+                }
+            })
+        }
     })
   })
