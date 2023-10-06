@@ -37,7 +37,7 @@ JOB_TYPE = (
     )
 
 class Job(models.Model):
-    employer = models.ForeignKey(Employer,on_delete=models.CASCADE)
+    employer = models.ForeignKey(Employer,on_delete=models.CASCADE,related_name='job')
     job_id = models.AutoField(primary_key=True)
     job_type = models.CharField(max_length=50,choices=JOB_TYPE,blank=False,null=False ,verbose_name='Job type')
     job_position = models.CharField(verbose_name="Position",max_length=100,null=False,blank=False)
