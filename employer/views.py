@@ -1,11 +1,10 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
-from urllib.parse import urlencode
-from .models import Employer
+from .models import Employer,Job
 from django.contrib.auth.hashers import make_password,check_password
-from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-
+import json
+from django.http import JsonResponse
 
 # logger = logging.getLogger(__name__)
 # Create your views here.
@@ -139,6 +138,36 @@ def company_profile(request):
 def post_jobs(request):
     email = request.session.get('email')
     if email:
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        if is_ajax:
+            employer = Employer.objects.get(emp_email = email)
+            if request.method == 'POST':
+                data = json.load(request)
+                type = data.get('type')
+                position = data.get('job_position')
+                requirement = data.get('job_requirement')
+                description = data.get('job_description')
+                salary = data.get('job_salary')
+                deadline = data.get('job_deadline')
+                location_type = data.get('location_type')
+                try:
+                    job = Job(
+                              employer = employer,
+                              job_type = type, 
+                              job_position = position,
+                              job_requirement = requirement,
+                              job_description = description,
+                              salary = salary,
+                              location_type = location_type,
+                              deadline = deadline
+                              )
+                    job.save()
+                    return JsonResponse({'Success':"Job added successfully."},status = 200)
+                except Exception as e:
+                    # print(e)
+                    return JsonResponse({'error':"Internal Server Error."}, status = 500)
+
+
         LOCATION_TYPE = (
                             ('Hybrid',"Hybrid"),
                             ('On Site',"On Site"),
