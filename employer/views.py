@@ -5,7 +5,7 @@ from django.contrib.auth.hashers import make_password,check_password
 from django.core.files.storage import default_storage
 import json
 from django.http import JsonResponse
-
+from django.core import serializers
 # logger = logging.getLogger(__name__)
 # Create your views here.
 
@@ -179,5 +179,33 @@ def post_jobs(request):
                 ('Freelance',"Freelance")
                 )
         data = Employer.objects.get(emp_email = email)
-        count = len([msg for msg in messages.get_messages(request) if msg.level == messages.INFO])
         return render(request,'employer-dashboard/components/postjobs.html',{'data':data,'loc_type':LOCATION_TYPE,'job_type':JOB_TYPE})
+
+def get_data(request):
+    email = request.session.get('email')
+    if email:
+        
+        try:
+            employer = Employer.objects.get(emp_email = email)
+            job_exists = Job.objects.filter(employer = employer).exists()
+            if job_exists:
+                jobs = Job.objects.filter(employer = employer)
+                job_list = []
+                for job in jobs:
+                    job_data = {
+                        'job_id': job.job_id,
+                        'job_type': job.job_type,
+                        'job_position': job.job_position,
+                        'job_requirement': job.job_requirement,
+                        'job_description': job.job_description,
+                        'salary': job.salary,
+                        'location_type': job.location_type,
+                        'deadline': job.deadline.strftime('%Y-%m-%d %H:%M:%S'),  # Format the date as needed
+                    }
+                    job_list.append(job_data)
+                    return JsonResponse({'data':job_list})
+            else:
+                return JsonResponse({'error':'Data not found'}, status = 400)
+        except Exception as e:
+            return JsonResponse({'error':"Data not found."})
+        
