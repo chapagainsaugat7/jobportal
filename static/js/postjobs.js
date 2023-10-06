@@ -48,16 +48,25 @@ $(document).ready(function(){
             data:JSON.stringify(data),
             success:function(res){
                 let message = res.message
-                if(res.status == 200){
-                    Swal.fire({
-                        icon:'success',
-                        title:'Success.',
-                        text: 'Please Fill all fields.'
-                        })
-                    }
+                Swal.fire({
+                    icon:'success',
+                    text:message,
+                    text:"Job Added Successfully."
+
+                }).then(()=>{
+                    $('#jobform')[0].reset()
+                    window.location.reload
+                })
                 },
                 error:function(res){
-                    console.log(`Error:{res}`);
+                    var message = res.error
+                    if(res.status === 500){
+                        Swal.fire({
+                            icon:'error',
+                            title:message,
+                            text:"Please Try again."
+                        })
+                    }
                 }
             })
         }
