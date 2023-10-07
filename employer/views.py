@@ -184,7 +184,7 @@ def post_jobs(request):
 def get_data(request):
     email = request.session.get('email')
     if email:
-        
+
         try:
             employer = Employer.objects.get(emp_email = email)
             job_exists = Job.objects.filter(employer = employer).exists()
