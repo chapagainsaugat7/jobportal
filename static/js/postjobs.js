@@ -70,5 +70,17 @@ $(document).ready(function(){
                 }
             })
         }
+
+    })
+    $.ajax({
+        url:"{% url 'getdata' %}",
+        method:'GET',
+        dataType:'josn',
+        success:function(res){
+            if(res.data){
+                var data = res.data
+                console.log(data)
+            }
+        }
     })
   })
