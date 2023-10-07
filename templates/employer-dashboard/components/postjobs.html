@@ -64,7 +64,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <form action="#" id="jobform" method="POST">
+              <form action="{% url 'postjobs' %}" id="jobform" method="POST">
                 {%csrf_token%}
                 <select class="form-select border border-black" id="job_type" name="job-type" aria-label="Default select example">
                     <option selected>Job Type</option>
