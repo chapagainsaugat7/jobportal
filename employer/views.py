@@ -5,7 +5,7 @@ from django.contrib.auth.hashers import make_password,check_password
 from django.core.files.storage import default_storage
 import json
 from django.http import JsonResponse
-from django.core import serializers
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 # logger = logging.getLogger(__name__)
 # Create your views here.
 
@@ -189,7 +189,7 @@ def get_data(request):
             employer = Employer.objects.get(emp_email = email)
             job_exists = Job.objects.filter(employer = employer).exists()
             if job_exists:
-                jobs = Job.objects.filter(employer = employer)
+                jobs = employer.job.all()
                 job_list = []
                 for job in jobs:
                     job_data = {
@@ -203,7 +203,7 @@ def get_data(request):
                         'deadline': job.deadline.strftime('%Y-%m-%d %H:%M:%S'),  # Format the date as needed
                     }
                     job_list.append(job_data)
-                    return JsonResponse({'data':job_list})
+                return JsonResponse({'data':job_list})
             else:
                 return JsonResponse({'error':'Data not found'}, status = 400)
         except Exception as e:
