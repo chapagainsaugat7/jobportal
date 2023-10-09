@@ -55,7 +55,7 @@ $(document).ready(function(){
 
                 }).then(()=>{
                     $('#jobform')[0].reset()
-                    window.location.reload
+                    fetchDataAndUpdateTable()
                 })
                 },
                 error:function(res){
@@ -72,15 +72,34 @@ $(document).ready(function(){
         }
 
     })
+   
+       // Function to fetch and update data
+  function fetchDataAndUpdateTable() {
     $.ajax({
-        url:"{% url 'getdata' %}",
-        method:'GET',
-        dataType:'josn',
-        success:function(res){
-            if(res.data){
-                var data = res.data
-                console.log(data)
-            }
+      url: '/employer/getdata/',
+      dataType: 'json',
+      success: function (response) {
+        if (response.data) {
+          console.log(response.data)
+          $.each(response.data, function (index, data) {
+            var editIcon =" <div class='flex flex-md-col flex-sm-row'><a href='#' id='"+data.job_id+"' class='mx-2'><i class='fas fa-pen text-blue'></i></a>"
+            var deleteIcon = "<a href='#' data-bs-toggle='modal' id='"+data.job_id+"' data-bs-target='#deletejob'><i class='fas fa-trash text-danger'></i></a></div>"
+
+            var newRow = '<tr><td>'+(index+1)+'</td><td>'+data.job_type+'</td><td>'+data.job_position+'</td><td>'+data.job_requirement+'</td><td>'+data.job_description.substring(0,15)+'...'+'</td><td>'+data.salary+'</td><td>'+data.location_type+'</td><td>'+editIcon+deleteIcon+'</td></tr>'
+            $('#jobTable tbody').append(newRow)
+          });
+        }else{
+          var row = "<tr><td class='bg-danger text-white'>No Jobs are posted.</td></tr>"
+          $('#jobTable tbody').append(row)
         }
-    })
+      },
+      error: function () {
+        console.log('Error fetching data');
+      },
+    });
+
+  }
+
+  // Fetch and update data when the page loads
+  fetchDataAndUpdateTable();
   })
