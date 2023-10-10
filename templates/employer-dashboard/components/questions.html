@@ -1,0 +1,90 @@
+{% extends "../index.html" %}
+
+{% block content %}
+<h1 class="fs-4 fw-semibold"><u>Test Questions</u></h1>
+<div class="row d-flex flex-col">
+    <div class="col-md-6 mb-4 mt-3">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn bg-primary text-white" data-bs-toggle="modal" data-bs-target="#postjob">
+            <i class="fas fa-plus"></i>&nbsp;&nbsp;Add Questions
+        </button>
+
+    </div>
+
+    <div>
+      <!-- table here -->
+      <!-- id, type , position, requirement description, salary, location type -->
+      <table class="table" id="jobTable">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Job</th>
+              <th scope="col">Question</th>
+              <th scope="col">Answer</th>
+              <th scope="col">Schedule</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr  data-id="1">
+              {% comment %} Data here {% endcomment %}
+            </tr>
+          </tbody>
+      </table>
+  </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="postjob" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="Label">Post Questions</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="{% url 'postjobs' %}" id="jobform" method="POST">
+                {%csrf_token%}
+                <select class="form-select border border-black" id="related_job" name="job-type" aria-label="Related Job">
+                    <option selected>Related Job</option>
+                    <option value="fulltime">Full Time</option>
+                    <option value="parttime">Part Time</option> 
+                </select>
+                <div class="mb-2 mt-1">
+                  <label for="position" class="form-label">Question</label>
+                  <input type="text" class=" border border-black form-control" id="position" required>
+                </div>
+                <div class="mb-2">
+                  <label for="answer1" class="form-label">Answer 1</label>
+                  <input type="text" class=" border border-black form-control" id="answer1" required>
+                  <input type="checkbox" name="is_answer" id="is_answer"> is Answer?
+                </div>
+                <div class="mb-2">
+                  <label for="answer2" class="form-label">Answer 2</label>
+                  <input type="text" class=" border border-black form-control" id="answer2" required>
+                  <input type="checkbox" name="is_answer" id="is_answer"> is Answer?
+                </div>
+                <div class="mb-2">
+                  <label for="answer3" class="form-label">Answer 3</label>
+                  <input type="text" class=" border border-black form-control" id="answer3" required>
+                  <input type="checkbox" name="is_answer" id="is_answer"> is Answer?
+                </div>
+                <div class="mb-2">
+                  <label for="answer4" class="form-label">Answer 4</label>
+                  <input type="text" class=" border border-black form-control" id="answer4" required>
+                  <input type="checkbox" name="is_answer" id="is_answer"> is Answer?
+                </div>
+                <div class="mb-2">
+                  <label for="requirement" class="form-label">Schedule Test</label>
+                  <input type="date" class=" border border-black form-control" id="requirement" required>
+                </div>
+              </div>
+            <div class="modal-footer">
+              <button type="button" class=" bg-danger btn text-white" data-bs-dismiss="modal">Close</button>
+              <button type="button" id="addjob" class="bg-primary btn text-white">Add Questions</button>
+            </div>
+          </form>
+          </div>
+        </div>
+      </div> 
+    <!-- Ends Modal -->
+{% endblock %}
