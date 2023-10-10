@@ -23,14 +23,14 @@
   
                   <p class="text-center h1 fw-bold mb-3 mx-1 mx-md-3 mt-2">Sign up</p>
   
-                  <form class="mx-1 mx-md-4" method="POST">
+                  <form class="mx-1 mx-md-4" method="POST" action="{% url 'register_jobseeker' %}">
                     {%csrf_token%}
   
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="email" class="form-control" name="emp_name" id="jobseeker_name" placeholder="Employer's Name" required>
-                        <label for="employer_name">Full Name</label>
+                        <input type="text" class="form-control" name="jname" id="jname" placeholder="Employer's Name" required>
+                        <label for="jname">Full Name</label>
                         <span id="nameError" class="text-small text-danger fw-bold d-none"></span>
                         
                       </div>
@@ -39,28 +39,18 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-phone fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Employer's number" required>
-                        <label for="phone_numner">Phone Number</label>
+                        <input type="text" class="form-control" id="jphone" name="jphone" placeholder="Employer's number" required>
+                        <label for="jphone">Phone Number</label>
                         <span id="phoneError" class="text-small text-danger fw-bold d-none"></span>
 
                      </div>
                     </div>
-                    
-                    <div class="d-flex flex-row align-items-center mb-4">
-                        <i class="fas fa-check fa-lg me-3 fa-fw"></i>
-                    <select class="form-select" id="company_type" name="comp_type" aria-label="Types of company" required>
-                        <option value="">Select preffered job category</option>
-                        <option value="IT">IT</option>
-                        <option value="Education">Education</option>
-                        {% comment %} <option value="3">Aru kei</option> {% endcomment %}
-                      </select>
-                      </div>
   
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="email" class="form-control" name="job_seeker_email_address" id="email" placeholder="example@example.com" required>
-                        <label for="email">Email address</label>
+                        <input type="email" class="form-control" name="jemail" id="jemail" placeholder="example@example.com" required>
+                        <label for="jemail">Email address</label>
                         <span id="emailError" class="text-small text-danger fw-bold d-none"></span>
                       </div>
                     </div>
@@ -68,23 +58,14 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                       <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="password" class="form-control" name="job_seeker_password" id="password" placeholder="Password" required>
-                        <label for="password">Password</label>
+                        <input type="password" class="form-control" name="jpassword" id="jpassword" placeholder="Password" required>
+                        <label for="jpassword">Password</label>
                         <span id="passwordError" class="text-small text-danger fw-bold d-none"></span>
                       </div>
                     </div>
-  
-                    <div class="d-flex flex-row align-items-center mb-4">
-                      <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                      <div class="form-outline form-floating flex-fill mb-0">
-                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Repeat your password" required />
-                        <label  for="confirm_password">Repeat Your Password</label>
-                        <span id="cpasswordError" class="text-small text-danger fw-bold d-none">Hel</span>
-                      </div>
-                    </div>
-  
+                    
                     <div class="d-flex justify-content-start mx-4 mb-3 mb-lg-4">
-                      <button type="button" id="register_jobseeker" class="btn button py-2">Register</button>
+                      <button type="submit" id="register_jobseeker" class="btn button py-2">Register</button>
                     </div>
   
                   </form>
@@ -108,6 +89,12 @@
     </div>
   </section>
 {% endblock %}
+
+{% block script %}
+  {% load static %}
+  {% comment %} <script  src="{% static './js/utility.js'%}"></script> {% endcomment %}
+  <script type="module" src = "{% static './js/jobseeker.js'%}" ></script>
+{% endblock script %}
 
 {%block footer%}
   {% include '../components/footer.html'%}
