@@ -1,7 +1,5 @@
 import { regexValidation, setBorderRed,showErrorMessage,setBorderIfValid,removeErrorMessage} from "./utility.js"
-$(function(){
-    // $('#register_employer').prop('disabled',true)
-    
+$(function(){    
     var name = ''
     $('#employer_name').val(name)
     var validName = false
