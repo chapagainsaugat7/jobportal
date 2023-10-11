@@ -48,7 +48,7 @@ class Job(models.Model):
     deadline = models.DateTimeField(blank=False,null=False,default=default_deadline)
 
     def __str__(self):
-        return self.job_type
+        return self.employer.emp_name
     
 
 class Questions(models.Model):
