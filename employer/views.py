@@ -209,3 +209,10 @@ def get_data(request):
         except Exception as e:
             return JsonResponse({'error':"Data not found."})
         
+
+def questions(request):
+    return render(request,'employer-dashboard/components/questions.html')
+
+
+def applicants(request):
+    return render(request,'employer-dashboard/components/applicants.html')
