@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.hashers import make_password,check_password
 from django.contrib import messages
 from jobseeker.models import JobSeeker
+import uuid
 
 def register_job_seeker(request):
     if request.method == 'POST':
@@ -9,9 +10,7 @@ def register_job_seeker(request):
         phone_number = request.POST.get('jphone')
         email = request.POST.get('jemail')
         password = request.POST.get('jpassword')
-
         normalized_email = email.lower()
-
         hashed_password  = make_password(password)
         message = ''
         email_exists = JobSeeker.objects.filter(email = normalized_email).exists()
@@ -27,17 +26,43 @@ def register_job_seeker(request):
             return render(request,'forms/job_seeker.html')
         
         else:
-            jobseeker = JobSeeker(name=name,phone=phone_number,email=normalized_email,password=hashed_password)
+            #name email password phone
+            pk = uuid.uuid4()
+            jobseeker = JobSeeker(id = pk,name=name,email=normalized_email,password=hashed_password,phone = phone_number)
             try:
                 jobseeker.save()
                 request.session['email'] = normalized_email
                 return redirect('jobseeker-dashboard')
             except Exception as e:
-                messages.add(request,"Internal Server Error. Please try again later.")
+                print(e)
+                messages.error(request,"Internal Server Error. Please try again later.")
                 return redirect('register_jobseeker')
+            
     return render(request,'forms/job_seeker.html')
 
 def login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        normalized_email = email.lower()
+
+        # print(normalized_email,password)
+
+        message = ''
+        if email == '':
+            message = "Email address is required."
+        
+        elif password =='':
+            message = "Password is required."
+
+        if email =='' or password == '':
+            messages.error(request,message)
+            return redirect('login')
+
+        else:
+            jobseeker = JobSeeker.object.get(email = email)
+
     return render(request,'forms/login.html')
 
 def jobseeker_dashboard(request):
@@ -49,4 +74,9 @@ def create_profile(request):
 
 
 def profile(request):
-    return render(request,'jobseeker-dashboard/components/profile.html')
+    email = request.session['email']
+    if email:
+        return render(request,'jobseeker-dashboard/components/profile.html')
+    else:
+        messages.error(request,"Session Expired. Please login here.")
+        return redirect('login')
