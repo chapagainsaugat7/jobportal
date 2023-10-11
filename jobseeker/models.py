@@ -9,6 +9,13 @@ def filepath(request,filename):
     filename  = "%s%s" % (time_now,old_filename)
     return os.path.join('jobseeker-cv/',filename)
 
+def profilepath(request,filename):
+    old_filename = filename
+    time_now = datetime.datetime.now().strftime("%Y%m%d%H:%M:%S")
+    filename = "%s%s" % (time_now,old_filename)
+    return os.path.join('jobseeker-profile/',filename)
+
+
 class JobSeeker(models.Model):
     id = models.UUIDField(primary_key=True)
     name = models.CharField(max_length=50,null=False,blank=False,verbose_name='Jobseeker Name')
@@ -20,7 +27,7 @@ class JobSeeker(models.Model):
     qualification = models.TextField(blank=True,null=True,verbose_name="Qualifications")
     preferences = models.TextField(null=True,blank=True,verbose_name="Job Preferences")
     cv = models.FileField(upload_to=filepath,verbose_name='CV')
-
+    profile = models.FileField(upload_to=profilepath,verbose_name='Profile')
 
     def __str__(self):
         return self.name
@@ -29,4 +36,7 @@ class AppliedJobs(models.Model):
     id = models.UUIDField(primary_key=True)
     job = models.ForeignKey(Job,on_delete=models.CASCADE)
     job_seeker = models.ForeignKey(JobSeeker,on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = 'Applied Jobs'
 
