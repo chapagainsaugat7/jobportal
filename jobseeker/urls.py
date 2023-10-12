@@ -6,5 +6,7 @@ urlpatterns = [
     path('login/',login,name="login"),
     path('jobseeker-dashboard',jobseeker_dashboard,name='jobseeker-dashboard'),
     path('create-profile',create_profile,name="create-profile"),
-    path('profile',profile,name="profile"),  
+    path('profile',profile,name="profile"),
+    path('logout',logout_jobseeker,name='logout'),
+    path('browsejob/<int:id>',browse_job,name="browsejob")
 ]
