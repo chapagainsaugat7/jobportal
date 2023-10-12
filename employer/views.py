@@ -85,13 +85,14 @@ def employer_signin(request):
 
 
 def employer_dashboard(request):
-    email = request.session.get('email')
+    email = request.session.get('email',None)
     if email:
         messages.info(request,"Plese complete building your company profile.")
         count = len([msg for msg in messages.get_messages(request) if msg.level == messages.INFO])
         data = Employer.objects.get(emp_email = email)
         return render(request,'employer-dashboard/index.html',{'data':data,'count':count})
     else:
+        messages.error(request,"Session Expred. Please sign in again.")
         return redirect('employer_signin')
     
 
@@ -99,7 +100,7 @@ def employer_dashboard(request):
 
 def company_profile(request):
 
-    email = request.session.get('email')
+    email = request.session.get('email',None)
     if email:
         employer = Employer.objects.get(emp_email = email)
         if request.method == 'POST':
@@ -136,7 +137,7 @@ def company_profile(request):
     
 
 def post_jobs(request):
-    email = request.session.get('email')
+    email = request.session.get('email',None)
     if email:
         is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         if is_ajax:
@@ -182,7 +183,7 @@ def post_jobs(request):
         return render(request,'employer-dashboard/components/postjobs.html',{'data':data,'loc_type':LOCATION_TYPE,'job_type':JOB_TYPE})
 
 def get_data(request):
-    email = request.session.get('email')
+    email = request.session.get('email',None)
     if email:
 
         try:
