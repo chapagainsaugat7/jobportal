@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.hashers import make_password,check_password
 from django.contrib import messages
+from django.contrib.auth import logout
 from jobseeker.models import JobSeeker
 from employer.models import Job
 import uuid
@@ -68,6 +69,7 @@ def login(request):
                 jobseeker = JobSeeker.objects.get(email = normalized_email)
                 password_matched = check_password(password,jobseeker.password)
                 if password_matched:
+                    request.session['email'] = normalized_email
                     return redirect('jobseeker-dashboard')
                 else:
                     messages.error(request,"Password doesn't matched.")
@@ -79,9 +81,11 @@ def login(request):
 
 
 def jobseeker_dashboard(request):
-    email = request.session['email']
+    email = request.session.get('email',None)
     if email:
-        return render(request,'jobseeker-dashboard/dashboard.html')
+        job = Job.objects.all()
+        # print(job)
+        return render(request,'jobseeker-dashboard/dashboard.html',{'job':job})
     else:
         messages.error(request,"Session Expired. Please login here.")
         return redirect('login')
@@ -98,3 +102,13 @@ def profile(request):
     else:
         messages.error(request,"Session Expired. Please login here.")
         return redirect('login')
+    
+
+def logout_jobseeker(request):
+    logout(request)
+    return redirect('home_page')
+
+
+def browse_job(request,id):
+    print(id)
+    pass
