@@ -4,12 +4,37 @@
         <link rel="stylesheet" href="{%static 'css/jobseeker.css'%}">
     {% endblock style %}
 
-    {% comment %} Navigation bar starts here {% endcomment %}
     {% block navbar %}
         {% include './components/navbar.html' %}    
     {% endblock navbar %}
-    {% comment %} Navigation bar ends here {% endcomment %}
+
     {%block content%}
+    <div class="container">
+
+        <div class="mt-5">
+            <span class="fs-5">Suggested for you</span>
+        </div>
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="row row-cols-3">
+                        {% for i in "12345" %}
+                        <div class="card mb-2 mx-2" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Card title</h5>
+                                <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
+                                <p class="card-text">lorem ipsummmmmmmmmmmmmmmmmmm<p>
+                                    <a href="#" class="card-link">Card link</a>
+                                    <a href="#" class="card-link">Another link</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
     {%endblock content%}
 
 {% include '../base/footer.html' %}
