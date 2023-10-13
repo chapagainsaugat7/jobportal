@@ -22,7 +22,7 @@ class Employer(models.Model):
         return self.emp_name
     
     def image(self):
-                return format_html('<img src="/media/{}" height=30 width=30 style="border-radius:50%">'.format(self.emp_profile))
+                return format_html('<img src="/media/{}" height=30 width=30 style="border-radius:50%">'.format(self.emp_profile.url))
     
 
 LOCATION_TYPE = (
