@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password,check_password
 from django.contrib import messages
 from django.contrib.auth import logout
 from jobseeker.models import JobSeeker
-from employer.models import Job
+from employer.models import Job,Employer
 import uuid
 
 def register_job_seeker(request):
@@ -110,5 +110,29 @@ def logout_jobseeker(request):
 
 
 def browse_job(request,id):
-    print(id)
-    pass
+    email = request.session.get('email',None)
+    if email:
+        try:
+            job = Job.objects.get(job_id = id)
+        except:
+            pass
+        return render(request,'jobseeker-dashboard/components/browsejobs.html',{"data":job})
+
+    else:
+        messages.error(request,"Session Expired. Please Login again.")
+        return redirect('login')
+    
+def view_employer(request,employer):
+    email = request.session.get('email',None)
+    if email:
+        try:
+            employer = Employer.objects.get(emp_id = employer)
+            # print(employer.emp_phone_number)
+            # print(employer.emp_profile)
+        except Exception as e:
+            pass
+        return render(request,'jobseeker-dashboard/components/aboutemployer.html',{'employer':employer})
+    else:
+        messages.error(request,"Session Expired. Please Login again.")
+        return redirect('login')
+
