@@ -88,11 +88,16 @@ def employer_dashboard(request):
     email = request.session.get('email',None)
     if email:
         messages.info(request,"Plese complete building your company profile.")
-        count = len([msg for msg in messages.get_messages(request) if msg.level == messages.INFO])
-        data = Employer.objects.get(emp_email = email)
+        count =len([msg for msg in messages.get_messages(request) if msg.level == messages.INFO])
+        try:
+            employer = Employer.objects.filter(emp_email = email).first()
+            if employer:
+               data = Employer.objects.get(emp_email = email)
+        except Exception as e:
+            pass
         return render(request,'employer-dashboard/index.html',{'data':data,'count':count})
     else:
-        messages.error(request,"Session Expred. Please sign in again.")
+        messages.error(request,"Session Expired. Please sign in again.")
         return redirect('employer_signin')
     
 
