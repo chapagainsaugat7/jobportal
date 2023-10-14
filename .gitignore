@@ -14,6 +14,7 @@ employer/__pycache__/*
 
 __pycache__/*
 
+utility.html
 
 employer/__pycache__/urls.cpython-310.pyc
 employer/__pycache__/views.cpython-310.pyc
