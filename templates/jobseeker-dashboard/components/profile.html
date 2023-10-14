@@ -1,10 +1,117 @@
 {% extends '../dashboard.html' %}
-
 {%block content%}
 <div class="container">
     <div class="my-3">
-        <h1 class="mt-2 mx-2 fs-4">Create your profile</h1>
-        <hr class="border border-danger border-2 opacity-100 w-25">
+        <div class="container shadow-lg p-3 mb-5 bg-body-tertiary border">
+            <div class="d-flex justify-content-end">
+                <a href="#" class="bg-primary text-white p-1 rounded mx-1" id="toggle_update">
+                    <i class="fas fa-pen mx-1"></i>
+                    Update</a>
+                <a href="#" class="bg-primary text-white p-1 rounded mx-1">
+                    <i class="fas fa-file-download mx-1"></i>
+                    Download CV</a>
+            </div>  
+        </div>
+        <div class="container shadow-lg p-3 mb-5 bg-body-tertiary border" id="display">
+            display.....
+            {% lorem 1 b random %}
+        </div>     
+        <div class="container shadow-lg p-3 mb-5 bg-body-tertiary border" id = "update">
+            <h1 class="fs-4 mb-3">Update Profile</h1>
+            <form class="row g-3" method="POST" action="{% url 'profile' %}" enctype="multipart/form-data">
+                {%csrf_token%}
+                <div class="col-md-6">
+                  <label for="name" class="form-label">Name</label>
+                  <input type="text" class="form-control" value="{{data.name}}" name="name" id="name">
+                </div>
+                <div class="col-md-6">
+                  <label for="emailAdderss" class="form-label">Email</label>
+                  <input type="email" value="{{data.email}}" class="form-control" name="email" id="emailAdderss" disabled>
+                </div>
+                <div class="col-md-6">
+                  <label for="address" class="form-label">Address</label>
+                  <input type="text" value="{{data.address}}" name="address" class="form-control" id="address" placeholder="1234 Main St">
+                </div>
+                <div class="col-md-6">
+                  <label for="phone" class="form-label">Phone</label>
+                  <input type="text" class="form-control" name="phone" id="phone" value="{{data.phone}}" placeholder="+97798---">
+                </div>
+                <div class="col-md-6">
+                  <label for="dob" class="form-label">Date of Birth</label>
+                  <input type="date" class="form-control" min="1980-01-01" max="2012-12-31" name="dob" value="{{data.date_of_birth}}" id="dob">
+                </div>
+                <div class="col-md-6">
+                  <label for="preference" class="form-label">Prefered Job(separated with comma)</label>
+                  <input type="text" value="{{data.preferences}}" name="preference" class="form-control" id="preference">
+                </div>
+                <div class="col-md-6">
+                  <label for="qualifications" class="form-label">Qualifications</label>
+                  <div>
+                      <textarea name="qualification" name="qualification" id="qualifications" cols="60" rows="5" style="resize: none;">{{data.qualification}}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="aboutyou" class="form-label">About You</label>
+                  <div>
+                      <textarea name="aboutyou" name="aboutyou" id="aboutyou" cols="60" rows="5" style="resize: none;">{{data.about_me}}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="cv" class="form-label">Upload CV</label>
+                    <input type="file" name="cv" class="form-control" id="cv">
+                    <div>
+                      {% if data.cv %}
+                        <iframe src="{{data.cv.url}}" type="application/pdf" class="mt-2 mb-2" style="height: 150px; width: 150px; border-radius:10px;border:none;">
+                          </iframe>
+                      {%else%}
+                       <p class="text-danger">Please Upload CV</p>
+                     {% endif %}
+
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="profile" class="form-label">Your profile Photo</label>
+                    <input type="file" name="profile" class="form-control" id="profile">
+                    <div>
+                      {% if data.profile%}
+                     <img src={{data.profile.url}} alt="Profile" class="mt-2" style="height: 50px; width: 50px; border-radius:10px;">
+                     {%else%}
+                     <p>Profile not set.</p>
+                     {% endif %}
+                    </div>
+                  </div>
+                <div class="col-12">
+                  <button type="submit" class="bg-primary text-white rounded border-0 p-2">Update Profile</button>
+                </div>
+              </form>
+        </div>     
     </div>
 </div>
 {%endblock content%}
+
+{% block script %}
+    <script>
+        var display_div = document.getElementById('display')
+        var update_div = document.getElementById('update')
+        var toggle_update = document.getElementById('toggle_update')
+
+        const displayDivVisible = localStorage.getItem('displayDivVisible');
+
+        display_div.style.display = displayDivVisible === 'block' ? 'block' : 'none';
+        update_div.style.display = displayDivVisible === 'block' ? 'none' : 'block';
+
+        toggle_update.addEventListener('click', () => {
+            if (display_div.style.display === 'none') {
+                display_div.style.display = 'block';
+                update_div.style.display = 'none';
+            } else {
+                display_div.style.display = 'none';
+                update_div.style.display = 'block';
+            }
+
+             // Store the current visibility state in localStorage
+             localStorage.setItem('displayDivVisible', display_div.style.display);
+        });
+
+    </script>
+{% endblock script %}
