@@ -55,3 +55,7 @@ hr{
 .cursor-pointer{
     cursor:  pointer !important;
 }
+
+div#update{
+    display: none;
+}
