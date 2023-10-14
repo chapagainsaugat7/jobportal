@@ -22,6 +22,7 @@ class JobSeeker(models.Model):
     email = models.EmailField(null=False, blank=False, unique=True,verbose_name='Jobseeker Email')
     password = models.TextField(max_length=255,blank=False,null=False,verbose_name='Jobseeker Password')
     phone = models.TextField(max_length=15,blank=False,null=False,verbose_name='Jobseeker Phone')
+    address = models.TextField(max_length=50,blank=True,null=True,default="Kathmandu",verbose_name='Address')
     date_of_birth = models.DateField(null=True, blank=True)
     about_me = models.TextField(null=True,blank=True,verbose_name='About You')
     qualification = models.TextField(blank=True,null=True,verbose_name="Qualifications")
