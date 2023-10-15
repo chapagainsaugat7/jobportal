@@ -3,14 +3,9 @@ from django.contrib import messages
 from .models import Employer,Job
 from django.contrib.auth.hashers import make_password,check_password
 from django.core.files.storage import default_storage
-import json
 from django.http import JsonResponse
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
-# logger = logging.getLogger(__name__)
-# Create your views here.
-
-
-
+import json
 
 def register_employer(request):
     if request.method == 'POST':
