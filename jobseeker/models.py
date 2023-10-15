@@ -26,6 +26,7 @@ class JobSeeker(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
     about_me = models.TextField(null=True,blank=True,verbose_name='About You')
     qualification = models.TextField(blank=True,null=True,verbose_name="Qualifications")
+    experiences = models.TextField(blank = True,null=True,verbose_name='Experiences')
     preferences = models.TextField(null=True,blank=True,verbose_name="Job Preferences")
     cv = models.FileField(upload_to=filepath,verbose_name='CV')
     profile = models.FileField(upload_to=profilepath,verbose_name='Profile')
@@ -37,6 +38,7 @@ class AppliedJobs(models.Model):
     id = models.UUIDField(primary_key=True)
     job = models.ForeignKey(Job,on_delete=models.CASCADE)
     job_seeker = models.ForeignKey(JobSeeker,on_delete=models.CASCADE)
+    coverletter = models.TextField(null=False,blank=False,verbose_name="Cover Letter",default='')
 
     class Meta:
         verbose_name_plural = 'Applied Jobs'
