@@ -10,4 +10,6 @@ urlpatterns = [
     path('logout',logout_jobseeker,name='logout'),
     path('browsejob/<int:id>',browse_job,name="browsejob"),
     path('view_employer/<int:employer>',view_employer,name="view_employer"),
+    path('downloadcv/<uuid:jobseeker_id>',download_cv,name="downloadcv"),
+    path('applyjob/',applyjob,name='applyjob'),
 ]
