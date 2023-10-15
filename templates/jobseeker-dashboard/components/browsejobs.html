@@ -26,7 +26,10 @@
           <h1 class="modal-title fs-5" id="exampleModalLabel">Apply Jobs</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <form method="POST">
+          {% csrf_token %}
         <div class="modal-body">
+          <input type="text" value="{{data.job_id}}" id="job_id" hidden>
           <label for="coverletter" class="mt-2">Cover Letter</label>
           <div>
             <textarea name="coverletter" id="coverletter" cols="55" rows="10" style="resize: none;outline:none;"></textarea>
@@ -34,9 +37,57 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="bg-primary border border-0 p-2 text-white rounded">Save changes</button>
+          <button type="submit" class="bg-primary border border-0 p-2 text-white rounded" id="apply">Apply</button>
         </div>
       </div>
+    </form>
     </div>
   </div>
+{% endblock %}
+{%block script%}
+{% load static %}
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+<script>
+
+  CKEDITOR.replace('coverletter',{
+    toolbar: [
+      { name: 'styles', items: ['Bold', 'Italic','Underline'] },
+      { name: 'lists', items: ['NumberedList', 'BulletedList'] },
+      { name: 'align', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] }
+    ],
+  })
+
+  $('#apply').on('click',function(event){
+    event.preventDefault()
+    var editor = CKEDITOR.instances.coverletter
+    var coverletter = editor.getData()
+    var job_id = $('#job_id').val()
+    var csrf = $('input[name=csrfmiddlewaretoken]').val()
+    let data = {
+      'coverletter':coverletter,
+      'job_id':job_id
+    }
+    $.ajax({
+      url:'/jobseeker/applyjob/',
+      method:'POST',
+      headers:{
+        "X-Requested-With": "XMLHttpRequest",
+        'Accept':'application/json',
+        'Content-Type':'application/json',
+        'X-CSRFToken':csrf
+      },
+      type: "POST",
+      data: JSON.stringify(data),
+      dataType: 'json',
+      success:function(res){
+
+      },
+      error:function(res){
+
+      }
+    })
+  })
+
+
+</script>
 {% endblock %}
