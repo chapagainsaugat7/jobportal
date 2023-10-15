@@ -2,13 +2,15 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.hashers import make_password,check_password
 from django.contrib import messages
 from django.contrib.auth import logout
-from jobseeker.models import JobSeeker
+from jobseeker.models import JobSeeker,AppliedJobs
 from employer.models import Job,Employer
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.template.loader import get_template
 from django.http import HttpResponse
 from django.core.files.storage import default_storage
+from django.core.paginator import Paginator
 from xhtml2pdf import pisa
+from io import BytesIO
 import uuid
 import json
 def register_job_seeker(request):
@@ -88,9 +90,13 @@ def login(request):
 def jobseeker_dashboard(request):
     email = request.session.get('jobseeker_email',None)
     if email:
-        job = Job.objects.all()
-        # print(job)
-        return render(request,'jobseeker-dashboard/dashboard.html',{'job':job})
+        job = Job.objects.order_by('job_id')
+        paginator = Paginator(job,6)
+        page_number = request.GET.get('page')
+        pages = paginator.get_page(page_number)
+        total_pages = paginator.num_pages #Returns total number of pages.
+
+        return render(request,'jobseeker-dashboard/dashboard.html',{'job':job,'pages':pages,'lastpage':total_pages,'pagelist':[n+1 for n in range(total_pages)]})
     else:
         messages.error(request,"Session Expired. Please login here.")
         return redirect('login')
@@ -114,8 +120,6 @@ def profile(request):
             aboutyou = request.POST.get('aboutyou')
             cv = request.FILES.get('cv',None)
             experiences = request.POST.get('experiences')
-            # print(preference)
-            # normalized_email = email.lower()
             if dob == '':
                 pass
             else:
@@ -149,7 +153,6 @@ def profile(request):
                 print(e)
 
         jobseeker = JobSeeker.objects.get(email = email_add)
-        # print("CV...",jobseeker.cv.url)
         return render(request,'jobseeker-dashboard/components/profile.html',{'data':jobseeker})
     else:
         messages.error(request,"Session Expired. Please login here.")
@@ -164,11 +167,18 @@ def logout_jobseeker(request):
 def browse_job(request,id):
     email = request.session.get('jobseeker_email',None)
     if email:
-        try:
+        try:   
+            allow = True
             job = Job.objects.get(job_id = id)
-        except:
-            pass
-        return render(request,'jobseeker-dashboard/components/browsejobs.html',{"data":job})
+            jobseeker = JobSeeker.objects.get(email=email)
+            is_applied = AppliedJobs.objects.filter(job__job_id = id,job_seeker__id = jobseeker.id).exists()
+            if is_applied:
+                allow = False
+
+            # print(allow)
+        except Exception as e:
+            print("Exception in browse_job",e)
+        return render(request,'jobseeker-dashboard/components/browsejobs.html',{"data":job,"allowed":allow})
 
     else:
         messages.error(request,"Session Expired. Please Login again.")
@@ -190,20 +200,20 @@ def download_cv(request,jobseeker_id):
     email = request.session.get('jobseeker_email',None)
     if email:
         try:
-            print("Entering try")
+            # print("Entering try")
             jobseeker = JobSeeker.objects.get(id = jobseeker_id)
 
             context = {'data':jobseeker}
             template = get_template('jobseeker-dashboard/components/downloadcv.html')
             html = template.render(context)
-            # cv_content = render_to_string('jobseeker-dashboard/components/downloadcv.html',{'data':jobseeker})
-            # print(cv_content)
-            response = HttpResponse(content_type='application/pdf')
+            pdf_buffer = BytesIO()
+            pisa.CreatePDF(html, dest=pdf_buffer)
+            pdf_buffer.seek(0) #set buffer position to start.
+            response = HttpResponse(pdf_buffer,content_type='application/pdf')
             response['Content-Disposition'] = f'filename="{jobseeker.name}_CV.pdf"'
-            pisa.CreatePDF(html, dest=response)
             return response
         except Exception as e:
-            print(e)
+            pass
     else:
         messages.error(request,"Please Sign in here.")
         return redirect('login')
@@ -217,19 +227,14 @@ def applyjob(request):
                 data = json.load(request)
                 coverletter = data.get('coverletter')
                 job_id = data.get('job_id')
+                job = Job.objects.get(job_id = job_id)
+                jobseeker = JobSeeker.objects.get(email = email)
                 try:
-                    '''
-                        - get coverletter and corresponding job id.
-                        - check if user already applied for that job.
-                            if  already applied:
-                                disable apply button on view. 
-                                for that we can return a HttpResponse indicating that he already apply for a job.
-                            else:
-                                he can apply for the job
-                                applied_job = AppliedJobs(job_id = job_id, job = job, coverletter = coverletter)
-                                appliedjob.save()
-                    '''
-                    return HttpResponse({'success':"Application received."})
+                    pk = uuid.uuid4()
+                    appliedjobs = AppliedJobs(id = pk, job = job,job_seeker = jobseeker,coverletter = coverletter)
+                    appliedjobs.save()
+                    response_data = {'success': 'Application received.'}
+                    return HttpResponse(json.dumps(response_data),content_type = 'application/json',status=200)
                 except Exception as e:
                     print("Exception in applyjob view",e)
     
