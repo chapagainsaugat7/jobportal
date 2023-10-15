@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fontawesomefree',
+    'ckeditor',
     'core',
     'jobseeker',
     'employer',
@@ -164,3 +165,9 @@ MESSAGE_TAGS = {
  }
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+
+# CKEDITOR Configuration
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+
