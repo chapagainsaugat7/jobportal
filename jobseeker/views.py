@@ -5,9 +5,12 @@ from django.contrib.auth import logout
 from jobseeker.models import JobSeeker
 from employer.models import Job,Employer
 from django.views.decorators.clickjacking import xframe_options_exempt
-
-import uuid
+from django.template.loader import get_template
+from django.http import HttpResponse
 from django.core.files.storage import default_storage
+from xhtml2pdf import pisa
+import uuid
+import json
 def register_job_seeker(request):
     if request.method == 'POST':
         name = request.POST.get('jname')
@@ -110,6 +113,7 @@ def profile(request):
             qualification = request.POST.get('qualification')
             aboutyou = request.POST.get('aboutyou')
             cv = request.FILES.get('cv',None)
+            experiences = request.POST.get('experiences')
             # print(preference)
             # normalized_email = email.lower()
             if dob == '':
@@ -132,15 +136,13 @@ def profile(request):
                 cv = request.FILES.get('cv')
                 jobseeker.cv.save(cv.name,cv)
             
-
-
             jobseeker.name = name
             jobseeker.address = address
             jobseeker.phone = phone
             jobseeker.preferences = preference
             jobseeker.about_me = aboutyou
             jobseeker.qualification = qualification
-            
+            jobseeker.experiences = experiences           
             try:
                 jobseeker.save()
             except Exception as e:
@@ -148,7 +150,6 @@ def profile(request):
 
         jobseeker = JobSeeker.objects.get(email = email_add)
         # print("CV...",jobseeker.cv.url)
-
         return render(request,'jobseeker-dashboard/components/profile.html',{'data':jobseeker})
     else:
         messages.error(request,"Session Expired. Please login here.")
@@ -178,8 +179,6 @@ def view_employer(request,employer):
     if email:
         try:
             employer = Employer.objects.get(emp_id = employer)
-            # print(employer.emp_phone_number)
-            # print(employer.emp_profile)
         except Exception as e:
             pass
         return render(request,'jobseeker-dashboard/components/aboutemployer.html',{'employer':employer})
@@ -187,3 +186,53 @@ def view_employer(request,employer):
         messages.error(request,"Session Expired. Please Login again.")
         return redirect('login')
 
+def download_cv(request,jobseeker_id):
+    email = request.session.get('jobseeker_email',None)
+    if email:
+        try:
+            print("Entering try")
+            jobseeker = JobSeeker.objects.get(id = jobseeker_id)
+
+            context = {'data':jobseeker}
+            template = get_template('jobseeker-dashboard/components/downloadcv.html')
+            html = template.render(context)
+            # cv_content = render_to_string('jobseeker-dashboard/components/downloadcv.html',{'data':jobseeker})
+            # print(cv_content)
+            response = HttpResponse(content_type='application/pdf')
+            response['Content-Disposition'] = f'filename="{jobseeker.name}_CV.pdf"'
+            pisa.CreatePDF(html, dest=response)
+            return response
+        except Exception as e:
+            print(e)
+    else:
+        messages.error(request,"Please Sign in here.")
+        return redirect('login')
+
+def applyjob(request):
+    email = request.session.get('jobseeker_email',None)
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    if email:
+        if is_ajax:
+            if request.method == 'POST':
+                data = json.load(request)
+                coverletter = data.get('coverletter')
+                job_id = data.get('job_id')
+                try:
+                    '''
+                        - get coverletter and corresponding job id.
+                        - check if user already applied for that job.
+                            if  already applied:
+                                disable apply button on view. 
+                                for that we can return a HttpResponse indicating that he already apply for a job.
+                            else:
+                                he can apply for the job
+                                applied_job = AppliedJobs(job_id = job_id, job = job, coverletter = coverletter)
+                                appliedjob.save()
+                    '''
+                    return HttpResponse({'success':"Application received."})
+                except Exception as e:
+                    print("Exception in applyjob view",e)
+    
+    else:
+        messages.error(request,"Please Sign in before you proceed")
+        return redirect('login')
