@@ -13,6 +13,7 @@ from xhtml2pdf import pisa
 from io import BytesIO
 import uuid
 import json
+import datetime
 def register_job_seeker(request):
     if request.method == 'POST':
         name = request.POST.get('jname')
@@ -169,16 +170,26 @@ def browse_job(request,id):
     if email:
         try:   
             allow = True
+            deadline_reached = False
             job = Job.objects.get(job_id = id)
             jobseeker = JobSeeker.objects.get(email=email)
             is_applied = AppliedJobs.objects.filter(job__job_id = id,job_seeker__id = jobseeker.id).exists()
+            message = ''
+            # Prevent jobseeker from applying job after deadline
+            if datetime.date.today() > job.deadline:
+                allow = False
+                message = "Application closed."                
+            
+
             if is_applied:
                 allow = False
+                message = "You've already applied for this job."
+                
 
             # print(allow)
         except Exception as e:
             print("Exception in browse_job",e)
-        return render(request,'jobseeker-dashboard/components/browsejobs.html',{"data":job,"allowed":allow})
+        return render(request,'jobseeker-dashboard/components/browsejobs.html',{"data":job,"allowed":allow,"message":message})
 
     else:
         messages.error(request,"Session Expired. Please Login again.")
