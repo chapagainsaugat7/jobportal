@@ -4,7 +4,7 @@ from .models import Employer,Job
 from django.contrib.auth.hashers import make_password,check_password
 from django.core.files.storage import default_storage
 from django.http import JsonResponse
-from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+from jobseeker.models import AppliedJobs
 import json
 
 def register_employer(request):
@@ -191,6 +191,7 @@ def get_data(request):
             job_exists = Job.objects.filter(employer = employer).exists()
             if job_exists:
                 jobs = employer.job.all()
+                print(jobs)
                 job_list = []
                 for job in jobs:
                     job_data = {
@@ -204,10 +205,12 @@ def get_data(request):
                         'deadline': job.deadline.strftime('%Y-%m-%d %H:%M:%S'),  # Format the date as needed
                     }
                     job_list.append(job_data)
+                # print("data",job_list)
                 return JsonResponse({'data':job_list})
             else:
                 return JsonResponse({'error':'Data not found'}, status = 400)
         except Exception as e:
+            print(e)
             return JsonResponse({'error':"Data not found."})
         
 
@@ -216,4 +219,22 @@ def questions(request):
 
 
 def applicants(request):
-    return render(request,'employer-dashboard/components/applicants.html')
+    email = request.session.get('email',None)
+    if email:
+        #check employer information
+        employer = Employer.objects.get(emp_email = email)
+
+        #check job posted by employer
+        job = Job.objects.get(employer = employer)
+        applicants = None
+        message = ''
+        applicants_exists = AppliedJobs.objects.filter(job = job).exists()
+        if applicants_exists:
+            applicants = AppliedJobs.objects.filter(job=job)
+        else:
+            message = "No applications yet."
+        
+        return render(request,'employer-dashboard/components/applicants.html',{'message':message,'data':applicants})
+    else:
+        messages.error("Session Expired. Please login again.")
+        return redirect('employer_signin')
