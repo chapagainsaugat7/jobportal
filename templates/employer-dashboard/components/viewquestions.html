@@ -1,0 +1,92 @@
+{% extends "../index.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            Job posted by {{job.employer.emp_name}}
+        </div>
+        <div class="card-body">
+            <h1 class="card-title fs-5">{{job.job_position}}</h1>
+            <h5 class="card-text fs-6">{{job.location_type}}</h5>
+          <h5 class="card-title fs-6">{{job.job_type}}</h5>
+          <h5 class="card-title fs-6 fw-bold">{{job.salary}}</h5>
+          <p class="card-text">{{job.job_description | safe}}</p>
+          <p class="card-text text-danger"> Deadline: &nbsp;{{job.deadline}}</p>
+          <a href="#" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#addQuestions">Add Questions</a>
+        </div>
+    </div>
+    <div class="my-4">
+        <h5>Questions</h5>
+    </div>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Question</th>
+            <th scope="col">Correct Answer</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="addQuestions" tabindex="-1" aria-labelledby="addQuestions" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Add Questions</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="#" method="post">
+            {% csrf_token %}
+                <input type="hidden" class="form-control" name="job_id" value="{{job.job_id}}" disabled>
+            <div class="form-floating mb-1">
+                <input type="text" class="form-control" id="question" name="job_id" placeholder="Question">
+                <label for="question">Question</label>
+            </div>
+            <div class="form-floating mb-1">
+                <input type="text" class="form-control" id="correctAnswer" name="correctAnswer" placeholder="Correct Answer">
+                <label for="correctAnswer">Correct Answer</label>
+            </div>
+            <div class="form-floating mb-1">
+                <input type="text" class="form-control" id="correctAnswer" name="opt_1" placeholder="Option 1">
+                <label for="correctAnswer">Option 1</label>
+            </div>
+            <div class="form-floating mb-1">
+                <input type="text" class="form-control" id="correctAnswer" name="opt_2" placeholder="Option 2">
+                <label for="correctAnswer">Option 2</label>
+            </div>
+            <div class="form-floating mb-1">
+                <input type="text" class="form-control" id="correctAnswer" name="opt_3" placeholder="Option 3">
+                <label for="correctAnswer">Option 3</label>
+            </div>
+            <div class="form-floating mb-1">
+                <input type="text" class="form-control" id="correctAnswer" name="opt_4" placeholder="Option 4">
+                <label for="correctAnswer">Option 4</label>
+            </div>
+            <div class="form-floating mb-1">
+                <input type="date" class="form-control" id="date" min="10/01/2023" name="date">
+                <label for="correctAnswer">Schedule Test</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary p-1" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="bg-primary p-1 text-light border rounded">Add Questions</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+{% endblock content %}
+
