@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import make_password,check_password
 from django.core.files.storage import default_storage
 from django.http import JsonResponse
 from jobseeker.models import AppliedJobs
+from django.core.paginator import Paginator
 import json
 
 def register_employer(request):
@@ -215,24 +216,58 @@ def get_data(request):
         
 
 def questions(request):
-    return render(request,'employer-dashboard/components/questions.html')
+    email = request.session.get('email',None)
+    if email:
+        #Display job, question answer, schedule
+        employer = Employer.objects.get(emp_email = email)       
+        job_exists = Job.objects.filter(employer = employer).exists()
+        jobs = None
+        message = ''
+        if job_exists:
+            jobs = Job.objects.filter(employer = employer).order_by('job_id')
+        else:
+            message = 'No jobs posted yet.'
+
+        context = {
+            'jobs':jobs,
+            'message':message
+        }
+        return render(request,'employer-dashboard/components/questions.html',context)
+    else:
+        messages.error(request,"Session Expired.")
+        return redirect('employer_signin')
+
+def viewquestions(request,id):
+    email = request.session.get('email',None)
+    if email:
+        employer = Employer.objects.get(emp_email = email)
+        job = Job.objects.get(employer = employer,job_id = id)
+        context = {
+            'job':job
+        }
+        return render(request,'employer-dashboard/components/viewquestions.html',context)
+    else:
+        messages.error(request,"Session Expired.")
+        return redirect('employer_signin')
+
 
 
 def applicants(request):
     email = request.session.get('email',None)
     if email:
         #check employer information
-        employer = Employer.objects.get(emp_email = email)
-
-        #check job posted by employer
-        job = Job.objects.get(employer = employer)
-        applicants = None
+        applicants = {}
         message = ''
-        applicants_exists = AppliedJobs.objects.filter(job = job).exists()
-        if applicants_exists:
-            applicants = AppliedJobs.objects.filter(job=job)
-        else:
-            message = "No applications yet."
+
+        employer = Employer.objects.get(emp_email = email)
+        #one employer can post multiple jobs.
+        jobs = Job.objects.filter(employer = employer)
+        
+        #now check if jobs have applicants. 
+        for job in jobs:
+            applicant = AppliedJobs.objects.filter(job = job)
+            if applicant.exists():
+                applicants[job] = applicant
         
         return render(request,'employer-dashboard/components/applicants.html',{'message':message,'data':applicants})
     else:
