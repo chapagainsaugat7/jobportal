@@ -42,4 +42,5 @@ class AppliedJobs(models.Model):
 
     class Meta:
         verbose_name_plural = 'Applied Jobs'
-
+    def __str__(self) -> str:
+        return f'Applied For: {self.job.job_position} by {self.job_seeker.name}'
