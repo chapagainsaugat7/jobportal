@@ -9,5 +9,6 @@ urlpatterns = [
     path("postjobs/", post_jobs, name="postjobs"),
     path('getdata/',get_data,name="getjobs"),
     path('questions/',questions,name="questions"),
-    path('applicants/',applicants,name='applicants')
+    path('applicants/',applicants,name='applicants'),
+    path('viewquestions/<int:id>',viewquestions,name="viewquestions")
 ]
