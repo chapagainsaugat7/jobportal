@@ -1,109 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{{data.name}} - Resume</title>
-    {%load static%}
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="{% static './css/bootstrap.css'%}" />
-    <link rel="stylesheet" href="{% static './css/bootstrap.min.css'%}" />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{data.name}} - Resume</title>
+</head>
+<body>
+  <div class="container" style="display: flex;flex-direction: column;">
+    <div>
+      <img src="{{data.profile.path}}" style="height:100px;width:100px;object-fit: contain;">
 
-    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
-    <style>
-        html{
-            border: 2px solid black !important;
-        }
-      img {
-        height: 150px;
-        width: 150px;
-        border-radius: 50%;
-      }
-      .mt-5 {
-        margin-top: 15px !important;
-      }
-      .large {
-        font-size: 20px !important;
-        font-weight: 800;
-      }
-      .para {
-        font-size: 20px !important;
-      }
-     .bold{
-        font-weight: 900;
-     }
-     .italic{
-        font-style: italic;
-     }
-     hr{
-        width: 50% !important;
-     }
-    </style>
-  </head>
-  <body>
-    <div class="container shadow-lg p-3 mb-5 bg-body-tertiary border" id="resume">
-      <!-- container -->
-      <div class="inner-container">
-        <div class="mt-2">
-          {% if data.profile%}
-          <img src="{{data.profile.path}}" />
-          {%endif%}
-        </div>
-        <div class="mt-3">
-          <p class="bold">{{data.name}}</p>
-          <p class="">{{data.email}}</p>
-          <p>{{data.phone}}</p>
-          <p>{{data.address}}</p>
-          <p>{{data.date_of_birth}}</p>
-          <!-- <hr class="w-50 border border-dark border-2 opacity-75"> -->
-        </div>
-      </div>
-      <!-- container ends -->
-      <div class="container d-flex flex-column mt-5">
-        <div class="row">
-          <div class="col-md-4">
-            <div class="mx-5 mt-5 container">
-              <span class="large"> About Me </span>
-              <p class="para">{{data.about_me | safe}}</p>
-            </div>
-
-            <div class="col-md-6">
-              <span class="fs-5 fw-bold mb-1 large">Qualification</span>
-              <hr class="w-50 border-dark opacity-75 border-2" />
-              {{data.qualification|safe}}
-
-              <div class="mt-2 mb-2">
-                <span class="fs-5 fw-bold mb-1 large">Experiences</span>
-                <hr  />
-                {{data.experiences | safe}}
-              </div>
-              <div class="mt-2 mb-4">
-                <span class="fs-5 fw-bold large">Prefered Job Category</span>
-                <hr class="w-50 border-dark opacity-75 border-2" />
-                {{data.preferences}}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-    <script
-      type="module"
-      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
-    ></script>
-    <script
-      nomodule
-      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+    <div>
+        <h1>About Me</h1>
+        <hr>
+        <p>Name: &nbsp;{{data.name}}</p>
+        <p>Address: &nbsp;{{data.address}}</p>
+        <p>Phone: &nbsp;{{data.phone}}</p>
+        <p>Email: &nbsp;{{data.email}}</p>
+        
+        <h1>Career Objectives</h1>
+        <hr>
+        <p>{{data.about_me | safe}}</p>
+        
+        <h1>Education & Trainings</h1>
+        <hr>
+        <p>{{data.qualification | safe}}</p>
+
+        {% if data.experiences%}
+        <h1>Working Experiences</h1>
+        <hr>
+        <p>{{data.experiences | safe}}</p>
+        {%endif%}
+        <h1>Job Preferences</h1>
+        <hr>
+        <p>{{data.preferences}}</p>
+    </div>
+  </div>
+</body>
 </html>
