@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container">
-  <h1 class="fs-4">Applicants</h1>
+  <h1 class="fs-4">All Applicants</h1>
   <div class="container shadow-lg p-3 mb-5 bg-body-tertiary border">
     <div class="d-flex justify-content-start">
         <a href="#" class="bg-primary text-white p-1 rounded mx-1" id="toggle_update">
@@ -38,14 +38,15 @@
         </th>
       </tr>
       {%else%}
-      {%for applicants in data %}
+      {% for job,applicants in data.items %}
+      {% for applicant in applicants %}
       <tr>
         <th scope="row">{{ forloop.counter}}</th>
-        <td>{{applicants.job_seeker.name}}</td>
-        <td>{{applicants.job_seeker.email}}</td>
-        <td>{{applicants.job_seeker.phone}}</td>
-        <td>{{applicants.job|truncatechars:15}}</td>
-        <td>{{applicants.coverletter | safe |truncatechars:15}}</td>
+        <td>{{applicant.job_seeker.name}}</td>
+        <td>{{applicant.job_seeker.email}}</td>
+        <td>{{applicant.job_seeker.phone}}</td>
+        <td>{{applicant.job|truncatechars:15}}</td>
+        <td>{{applicant.coverletter | safe |truncatechars:15}}</td>
         <td>1</td>
         <td>
           <i class="fas fa-check"></i>
@@ -53,6 +54,8 @@
         </td>
       </tr>
       {%endfor%}
+      {%endfor%}
+  
       {%endif%}
     </tbody>
   </table>
