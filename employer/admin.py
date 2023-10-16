@@ -5,4 +5,3 @@ from .models import *
 admin.site.register(Employer)
 admin.site.register(Job)
 admin.site.register(Questions)
-admin.site.register(Answers)
