@@ -45,10 +45,10 @@ class Job(models.Model):
     job_description = models.TextField(verbose_name="Description",null=False,blank=False)
     salary = models.TextField(max_length=30,blank=True,null=True)
     location_type = models.TextField(choices=LOCATION_TYPE,blank=False)
-    deadline = models.DateTimeField(blank=False,null=False,default=default_deadline)
+    deadline = models.DateField(blank=False,null=False,default=default_deadline)
 
     def __str__(self):
-        return self.employer.emp_name
+        return f'{self.job_position} by {self.employer.emp_name}'
     
 
 class Questions(models.Model):
