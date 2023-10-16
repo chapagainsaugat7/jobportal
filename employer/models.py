@@ -56,21 +56,14 @@ class Questions(models.Model):
     question_id = models.AutoField(primary_key=True)
     question = models.CharField(verbose_name="Questions",max_length=150,blank=False,null=False)
     marks = models.CharField(max_length=50,null=False,blank=False,default=5)
+    correct_answer = models.CharField(max_length=100,null=True)
+    option_one = models.CharField(max_length=100,null=True)
+    option_two = models.CharField(max_length=100,null=True)
+    option_three = models.CharField(max_length=100, blank=True)
+    option_four = models.CharField(max_length=100, blank=True)
 
     class Meta:
         verbose_name_plural = 'Questions'
 
     def __str__(self) -> str:
-        return self.question
-
-class Answers(models.Model):
-    question = models.ForeignKey(Questions, related_name='question_answer',on_delete=models.CASCADE)
-    answer = models.CharField(max_length=100,null=False,blank=False)
-    is_answer_correct = models.BooleanField(default=False)
-
-    class Meta:
-        verbose_name_plural = 'Answers'
-
-    def __str__(self):
-        return self.answer
-
+        return f'{self.question} - {self.job.employer.emp_name}'
