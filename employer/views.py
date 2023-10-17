@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
-from .models import Employer,Job
+from .models import Employer,Job,Questions
 from django.contrib.auth.hashers import make_password,check_password
 from django.core.files.storage import default_storage
 from django.http import JsonResponse
@@ -227,11 +227,13 @@ def questions(request):
             jobs = Job.objects.filter(employer = employer).order_by('job_id')
         else:
             message = 'No jobs posted yet.'
+            
 
         context = {
             'jobs':jobs,
             'message':message
         }
+
         return render(request,'employer-dashboard/components/questions.html',context)
     else:
         messages.error(request,"Session Expired.")
@@ -240,10 +242,66 @@ def questions(request):
 def viewquestions(request,id):
     email = request.session.get('email',None)
     if email:
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        if is_ajax:
+            if request.method == 'POST':
+                 data = json.load(request)
+                 job_id = data.get('job_id')
+                 question = data.get('question')
+                 correct_answer = data.get('correctAnswer')
+                 opt1 = data.get('opt1')
+                 opt2 = data.get('opt2')
+                 opt3 = data.get('opt3')
+                 opt4 = data.get('opt4')
+
+                 try:
+                     job = Job.objects.get(job_id = job_id)
+                     #job question correct_answer 4 ota option_one
+                     question = Questions(job = job,question = question,correct_answer=correct_answer,option_one=opt1,option_two=opt2,option_three=opt3,option_four=opt4)
+                     
+                     question.save()
+                 except Exception as e:
+                    print(f'Exception in viewquestions view - {e}')
+
+
+
         employer = Employer.objects.get(emp_email = email)
         job = Job.objects.get(employer = employer,job_id = id)
+
+        message = ''
+        questions = None
+        paginator = None
+        page_number = None
+        total_pages = None
+        pages = None
+        view_question =None
+        question_exists = Questions.objects.filter(job=job).exists()
+        if question_exists:
+            questions = Questions.objects.filter(job = job).order_by('question_id')
+            paginator = Paginator(questions,3)
+            page_number = request.GET.get('page')
+            pages = paginator.get_page(page_number)
+            total_pages = paginator.num_pages
+        
+        else:
+            message = "Question doesn't exists."
+        
+        view_id = request.GET.get('view')
+        try:
+            view_question = Questions.objects.get(question_id = view_id)
+            
+
+        except Exception as e:
+            pass
+
         context = {
-            'job':job
+            'job':job,
+            'view_question':view_question,
+            'questions':questions,
+            'message':message,
+            'pages':pages,
+            'lastpage':total_pages,
+            'pagelist':[n+1 for n in range(total_pages)]
         }
         return render(request,'employer-dashboard/components/viewquestions.html',context)
     else:
