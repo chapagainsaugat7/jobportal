@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="my-4">
-        <h5>Questions</h5>
+        <h5 class="fw-bold">Questions</h5>
     </div>
     <table class="table">
         <thead>
@@ -47,7 +47,6 @@
                 <div class="d-flex flex-col">
                     <a href="#" class="mx-1 bg-danger p-1 rounded text-light"><i class="fas fa-trash"></i></a>
                     <a href="#" class="bg-success p-1 rounded text-light"><i class="fas fa-pen"></i></a>
-                    <a href="?view={{question.question_id}}" data-bs-toggle="modal" data-bs-target="#viewQuestion" class="bg-dark p-1 rounded text-light mx-1"><i class="fas fa-eye"></i></a>
                 </div>
             </td>
           </tr>
@@ -75,6 +74,41 @@
                   </nav>
                 </div>
             </div>
+    </div>
+    <div class="container mt-2">
+        <h5 class="mx-2 fs-5 fw-bold mb-2 mt-2">Applicants</h5>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Email</th>
+              <th scope="col">Cover Letter</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if applicant_not_found %}
+            <tr>
+              <th scope="row" colspan="5">{{applicant_not_found}}</th>
+            </tr>
+            {%else%}
+            {% for applicant in applicants %}
+            <tr>
+              <th scope="row">{{forloop.counter}}</th>
+              <td>{{applicant.job_seeker.name}}</td>
+              <td>{{applicant.job_seeker.email}}</td>
+              <td>{{applicant.coverletter|safe|truncatewords:15 }} </td>
+              <td>
+                <div class="d-flex">
+                  <a href="#">View</a>
+                </div>
+              </td>
+            </tr>
+            {%endfor%}
+            {%endif%}
+          </tbody>
+        </table>
     </div>
 </div>
 
@@ -125,26 +159,7 @@
       </div>
     </div>
   </div>
-  <!-- Modal for viewing question -->
-  <div class="modal fade" id="viewQuestion" tabindex="-1" aria-labelledby="Viwe Questoin" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">{{view_question.question}}</h1>
-          <h6 class="modal-title fs-5" id="exampleModalLabel">{{view_question.question}}</h6>
-
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="bg-primary p-1 text-light border rounded" data-bs-dismiss="modal">OK</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Modal for viewing question Ends -->
+ 
 {% endblock content %}
 
 {% block script%}
