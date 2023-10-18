@@ -43,7 +43,6 @@ $(function(){
                         text:"Questions added successfully.",
                     }).then((result)=>{
                         if (result.isConfirmed) {
-                            Swal.fire('Saved!','', 'success')
                             location.reload()
                         }
                     })
