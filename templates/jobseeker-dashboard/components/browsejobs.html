@@ -18,10 +18,11 @@
               {%else%}
               <a href="#"  data-bs-toggle="modal" class="m-0 bg-danger p-2 text-white rounded" aria-disabled="true" style="cursor: not-allowed;">Apply Job</a>
               <span class="p-2 text-success d-block mt-3">{{message}}</span>
+              <a class="d-block mt-3" href="{% url 'quiz' data.job_id %}">Give test</a>
                 
               {%endif%}
-              
               <a class="d-block mt-3" href="{% url 'jobseeker-dashboard' %}"> <i class="fas fa-long-arrow-alt-left"></i> Go Back</a>
+
             </div>
           </div>
     </div>
