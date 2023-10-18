@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password,check_password
 from django.contrib import messages
 from django.contrib.auth import logout
 from jobseeker.models import JobSeeker,AppliedJobs
-from employer.models import Job,Employer
+from employer.models import Job,Employer,Questions
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.template.loader import get_template
 from django.http import HttpResponse
@@ -14,6 +14,7 @@ from io import BytesIO
 import uuid
 import json
 import datetime
+import random
 def register_job_seeker(request):
     if request.method == 'POST':
         name = request.POST.get('jname')
@@ -170,7 +171,6 @@ def browse_job(request,id):
     if email:
         try:   
             allow = True
-            deadline_reached = False
             job = Job.objects.get(job_id = id)
             jobseeker = JobSeeker.objects.get(email=email)
             is_applied = AppliedJobs.objects.filter(job__job_id = id,job_seeker__id = jobseeker.id).exists()
@@ -186,10 +186,11 @@ def browse_job(request,id):
                 message = "You've already applied for this job."
                 
 
-            # print(allow)
+            print(is_applied)
         except Exception as e:
             print("Exception in browse_job",e)
-        return render(request,'jobseeker-dashboard/components/browsejobs.html',{"data":job,"allowed":allow,"message":message})
+        context = {"data":job,"allowed":allow,"message":message,"isapplied":is_applied}
+        return render(request,'jobseeker-dashboard/components/browsejobs.html',context)
 
     else:
         messages.error(request,"Session Expired. Please Login again.")
@@ -251,4 +252,44 @@ def applyjob(request):
     
     else:
         messages.error(request,"Please Sign in before you proceed")
+        return redirect('login')
+
+def quiz(request,id):
+    email = request.session.get('jobseeker_email',None)
+    if email:
+        jobseeker = JobSeeker.objects.get(email = email)
+        # print(jobseeker)
+        #Check if jobseeker has applied for a job or not.
+        is_job_applied = AppliedJobs.objects.filter(job_seeker = jobseeker).exists()
+        questions = None
+        message = ''
+        if is_job_applied:
+            job = AppliedJobs.objects.filter(job_seeker = jobseeker)
+            get_job = Job.objects.get(job_id = id)
+            questions_exists = Questions.objects.filter(job = get_job).exists()
+            if questions_exists:
+                questions = Questions.objects.filter(job = get_job)
+                question_list = list(questions)
+                random.shuffle(question_list)
+
+            else:
+                message = "No Questions are posted by employer."
+        else:
+            pass
+        context = {
+            'jobseeker':jobseeker,
+            'questions':question_list,
+            'message':message,
+        }
+        return render(request,"jobseeker-dashboard/quiz.html",context)
+    else:
+        messages.error(request,"session Expired.")
+        return redirect('login')
+
+def get_quizes(request):
+    email = request.session.get('jobseeker_email',None)
+    if email:
+        pass
+    else:
+        messages.error(request,"session Expired.")
         return redirect('login')
