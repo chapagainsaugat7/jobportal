@@ -5,7 +5,7 @@ from django.contrib.auth.hashers import make_password,check_password
 from django.core.files.storage import default_storage
 from django.http import JsonResponse
 from jobseeker.models import AppliedJobs
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator,PageNotAnInteger
 import json
 
 def register_employer(request):
@@ -282,17 +282,22 @@ def viewquestions(request,id):
             page_number = request.GET.get('page')
             pages = paginator.get_page(page_number)
             total_pages = paginator.num_pages
-        
+            
         else:
             message = "Question doesn't exists."
+            total_pages = 1
         
-        view_id = request.GET.get('view')
+        #Now displaying applicants for respected jobs.
+        applicants = None
+        applicant_not_found = ""
         try:
-            view_question = Questions.objects.get(question_id = view_id)
-            
-
+            applicants_exists = AppliedJobs.objects.filter(job = job).exists()
+            if applicants_exists:
+                applicants = AppliedJobs.objects.filter(job = job)
+            else:
+                applicant_not_found = "Applicants doesnt exists."
         except Exception as e:
-            pass
+            print(f"Exception querying applicants on view viewquestions - {e}")
 
         context = {
             'job':job,
@@ -301,7 +306,9 @@ def viewquestions(request,id):
             'message':message,
             'pages':pages,
             'lastpage':total_pages,
-            'pagelist':[n+1 for n in range(total_pages)]
+            'pagelist':[n+1 for n in range(total_pages)],
+            'applicant_not_found':applicant_not_found,
+            'applicants':applicants
         }
         return render(request,'employer-dashboard/components/viewquestions.html',context)
     else:
