@@ -1,0 +1,83 @@
+{% extends "../base/base.html" %}
+
+{% block content %}
+<div class="container-fluid p-1 shadow">
+    <h1 class="fs-5 mx-5 p-2">Hello, {{jobseeker}} !</h1>
+</div>
+<div class="container-fluid">
+    <div class="mx-5 mt-4">
+    {% for question in questions %}
+       <form action="#" method="post">
+        {% csrf_token %}
+        <p>{{forloop.counter}}.&nbsp;{{question.question}}</p>
+        <input type="hidden" class="correct-answer" data-answer="{{ question.correct_answer }}">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="option" id="optionone-{{question.question_id}}" value="{{question.option_one}}" data-question="{{ question.question_id }}" required>
+            <label class="form-check-label" for="optionone-{{question.question_id}}">
+              {{question.option_one}}
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="option" id="optiontwo-{{question.question_id}}" value="{{question.option_two}}" data-question="{{ question.question_id }}" required>
+            <label class="form-check-label" for="optiontwo-{{question.question_id}}">
+              {{question.option_two}}
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="option" id="optionthree-{{question.question_id}}" value="{{question.option_three}}"  data-question="{{ question.question_id }}" required>
+            <label class="form-check-label" for="optionthree-{{question.question_id}}">
+              {{question.option_three}}
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="option" id="optionfour-{{question.question_id}}" value="{{question.option_four}}" data-question="{{ question.question_id }}"  required>
+            <label class="form-check-label" for="optionfour-{{question.question_id}}">
+              {{question.option_four}}
+            </label>
+        </div>
+        <hr class="border border-dark border-1 opacity-75">
+        </form>
+        {%empty%}
+        {%endfor%}
+        <form action="#" method="post">
+            <input type="submit" value="Submit" id="submit" class="p-2 mb-2 bg-primary border text-light rounded">
+        </form>
+    </div>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+        const questionId = $(this).data('question');
+
+        const correctAnswer = $(`.correct-answer[data-answer="${questionId}"]`).val();
+
+        // Disable other radio buttons in the same group when one is selected
+        $('input[type="radio"]').change(function () {
+            const questionId = $(this).data('question');
+            $(`input[type="radio"][name="option-${questionId}"]`).not(this).prop('disabled', true);
+            console.log(questionId)
+        });
+    
+        // Handle the form submission
+        $('form').submit(function (event) {
+            event.preventDefault();
+    
+            let correctCount = 0;
+    
+            $('input[type="radio"]:checked').each(function () {
+                const questionId = $(this).data('question');
+                const selectedAnswer = $(this).val();
+                const correctAnswer = $(`.correct-answer[data-answer="${questionId}"]`).val();
+                console.log(selectedAnswer)
+                console.log(correctAnswer)
+                if (selectedAnswer === correctAnswer) {
+                    correctCount++;
+                }
+            });
+            // alert(correctCount)
+            // alert(`You got ${correctCount} out of ${questions.length} questions correct.`);
+        });
+    });
+    </script>
+{% endblock %}
