@@ -42,10 +42,10 @@ $(function(){
                         title:'Success',
                         text:"Questions added successfully.",
                     }).then((result)=>{
-                        if (result.isConfirmed) {
-                            location.reload()
+                        if(result.isConfirmed){
+                          location.reload()
                         }
-                    })
+                      })
                 },
                 error:function(res){
                     Swal.fire({
