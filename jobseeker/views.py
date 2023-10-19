@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect
+from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password,check_password
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -9,6 +10,7 @@ from django.template.loader import get_template
 from django.http import HttpResponse
 from django.core.files.storage import default_storage
 from django.core.paginator import Paginator
+from django.core import serializers
 from xhtml2pdf import pisa
 from io import BytesIO
 import uuid
@@ -103,10 +105,30 @@ def jobseeker_dashboard(request):
         messages.error(request,"Session Expired. Please login here.")
         return redirect('login')
 
-def create_profile(request):
-    nav_items = ["Home","Qualification","Preferences"]
-    return render(request,"jobseeker-dashboard/components/createprofile.html",{"nav_items":nav_items})
-
+def statistics(request):
+    email = request.session.get('jobseeker_email',None)
+    if email:
+        jobseeker = JobSeeker.objects.get(email = email)
+        # check if jobseeker applied to any job or not.
+        # may be 1 or more.
+        message = ''
+        applied_jobs = None
+        has_applied = AppliedJobs.objects.filter(job_seeker = jobseeker).exists()
+        if has_applied:
+            applied_jobs = AppliedJobs.objects.filter(job_seeker = jobseeker)
+            
+        else:
+            message = 'You havenot applied to any jobs yet.'
+        
+        context = {
+            'message':message,
+            'applied_jobs':applied_jobs
+        }
+        return render(request,'jobseeker-dashboard/components/statistics.html',context)
+    else:
+        messages.error(request,"Session Expired. Please Login here.")
+        return redirect('login')
+    
 @xframe_options_exempt
 def profile(request):
     email_add = request.session.get('jobseeker_email',None)
@@ -286,10 +308,46 @@ def quiz(request,id):
         messages.error(request,"session Expired.")
         return redirect('login')
 
-def get_quizes(request):
+def get_quizes(request,job_id,employer):
     email = request.session.get('jobseeker_email',None)
+    question_set = []
+    error_message = []
     if email:
-        pass
+        employer_exists = Employer.objects.filter(emp_id = employer).exists()
+        if employer_exists:
+            employer = Employer.objects.get(emp_id = employer)
+            jobs = Job.objects.filter(employer = employer)
+            #check if job has questions
+            has_questions = Questions.objects.filter(job__job_id = job_id).exists()
+            if has_questions:
+                questions = Questions.objects.filter(job__job_id = job_id)
+                for question in questions:
+                    question_list = {
+                        'id':question.question_id,
+                        'question':question.question,
+                        'correctAnswer':question.correct_answer,
+                        'option_one':question.option_one,
+                        'option_two':question.option_two,
+                        'option_three':question.option_three,
+                        'option_four':question.option_four,
+                    }
+                    question_set.append(question_list)
+            else:
+                error_message.append({"message":"No data found"})
+        else:
+            error_message.append({"message":"Employer not found"})
+
+
+
+
+            
+        response_data = {'questions':question_set}
+        response_json = json.dumps(response_data)
+        context = {
+            'error_message':error_message,
+            'questions':response_json
+        }        
+        return JsonResponse(context)
     else:
         messages.error(request,"session Expired.")
         return redirect('login')
