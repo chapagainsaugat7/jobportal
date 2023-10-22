@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import make_password,check_password
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -208,7 +208,7 @@ def browse_job(request,id):
                 message = "You've already applied for this job."
                 
 
-            print(is_applied)
+            # print(is_applied)
         except Exception as e:
             print("Exception in browse_job",e)
         context = {"data":job,"allowed":allow,"message":message,"isapplied":is_applied}
@@ -277,77 +277,51 @@ def applyjob(request):
         return redirect('login')
 
 def quiz(request,id):
-    email = request.session.get('jobseeker_email',None)
-    if email:
-        jobseeker = JobSeeker.objects.get(email = email)
-        # print(jobseeker)
-        #Check if jobseeker has applied for a job or not.
-        is_job_applied = AppliedJobs.objects.filter(job_seeker = jobseeker).exists()
-        questions = None
-        message = ''
-        if is_job_applied:
-            job = AppliedJobs.objects.filter(job_seeker = jobseeker)
-            get_job = Job.objects.get(job_id = id)
-            questions_exists = Questions.objects.filter(job = get_job).exists()
-            if questions_exists:
-                questions = Questions.objects.filter(job = get_job)
-                question_list = list(questions)
-                random.shuffle(question_list)
+   email = request.session.get('jobseeker_email',None)
+   if email:
+       jobseeker = JobSeeker.objects.get(email = email)
+       #check if this jobseeker has applied a job or not.
+       has_applied = AppliedJobs.objects.filter(job_seeker = jobseeker,job_id = id).exists()
+       if has_applied:
+           job = Job.objects.get(job_id = id)
+           has_quiz = Questions.objects.filter(job = job).exists()
+           if has_quiz:
+               quizes = Questions.objects.filter(job= job).order_by('question_id')
+               paginator = Paginator(quizes,1)
+               page_number = request.GET.get('page')
+               page_obj = Paginator.get_page(paginator,page_number)
+               context = {'jobseeker':jobseeker,'pages':page_obj}
+               if request.method == 'GET':
+                   request.session['previous_page'] = request.path_info+"?page="+request.GET.get('page','1') 
+                   print(request.session['previous_page'])
+                   return render(request,'jobseeker-dashboard/quiz.html',context)
+                
+               is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+               if request.method == 'POST':
+                   if is_ajax:
+                       data = json.load(request)
+                       correct_answer = data.get('correctAnswer')
+                       user_answer = data.get('userAnswer')
+                       user_marks = 0
+                       if user_answer == correct_answer:
+                        user_marks+=5
+                        print(request.session['previous_page'])
+                        return HttpResponseRedirect(request.session['previous_page'])
+                       else:
+                        print(request.session['previous_page'])
+                        print("Answer doesnt matched.")
+                        
 
-            else:
-                message = "No Questions are posted by employer."
-        else:
-            pass
-        context = {
-            'jobseeker':jobseeker,
-            'questions':question_list,
-            'message':message,
-        }
-        return render(request,"jobseeker-dashboard/quiz.html",context)
-    else:
-        messages.error(request,"session Expired.")
-        return redirect('login')
-
-def get_quizes(request,job_id,employer):
-    email = request.session.get('jobseeker_email',None)
-    question_set = []
-    error_message = []
-    if email:
-        employer_exists = Employer.objects.filter(emp_id = employer).exists()
-        if employer_exists:
-            employer = Employer.objects.get(emp_id = employer)
-            jobs = Job.objects.filter(employer = employer)
-            #check if job has questions
-            has_questions = Questions.objects.filter(job__job_id = job_id).exists()
-            if has_questions:
-                questions = Questions.objects.filter(job__job_id = job_id)
-                for question in questions:
-                    question_list = {
-                        'id':question.question_id,
-                        'question':question.question,
-                        'correctAnswer':question.correct_answer,
-                        'option_one':question.option_one,
-                        'option_two':question.option_two,
-                        'option_three':question.option_three,
-                        'option_four':question.option_four,
-                    }
-                    question_set.append(question_list)
-            else:
-                error_message.append({"message":"No data found"})
-        else:
-            error_message.append({"message":"Employer not found"})
-
-
-
-
-            
-        response_data = {'questions':question_set}
-        response_json = json.dumps(response_data)
-        context = {
-            'error_message':error_message,
-            'questions':response_json
-        }        
-        return JsonResponse(context)
-    else:
-        messages.error(request,"session Expired.")
-        return redirect('login')
+                    #    print(f'User Answer {user_answer} and correct Answer is {correct_answer}')
+                      
+                   
+           else:
+               return render(request,'jobseeker-dashboard/quiz.html',{"message":"No quiz exists."})
+               
+       else:
+           message = "You haven't applied for this job."
+           return render(request,'jobseeker-dashboard/components/browsejobs.html',{"message":message})
+           
+   else:
+       messages.error(request,"Please sign in here.")
+       return redirect('login')
