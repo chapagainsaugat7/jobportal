@@ -4,6 +4,16 @@
 <div class="container-fluid p-1 shadow">
     <h1 class="fs-5 mx-5 p-2">Hello, {{jobseeker}} !</h1>
 </div>
+<!-- <div class="container-fluid p-1 bg-danger p-3 text-light" id="notification">
+  <ol class="small">
+    <li>
+      Please dont refresh this page.
+    </li>
+    <li>
+      Don't leave this page. Otherwise you will be disqualified.
+    </li>
+  </ol>
+</div> -->
 <div class="container-fluid">
     <div class="mx-5 mt-4">
         {% if message%}
@@ -11,51 +21,121 @@
             {{message}}
           </div>
         {%else%}
-        {% for question in questions %}
-            <form action="#" method="post">
-                <p>{{forloop.counter}}&nbsp;{{question.question}}</p>
-                <input type="hidden" id="correctAnswer" value="{{question.correct_answer}}">
+        {% for question in pages %}
+            <form method="post">
+                <p>Q. &nbsp;{{question.question}}</p>
+                <input type="hidden" id="correctAnswer" name="answer" value="{{question.correct_answer}}">
+                <input type="hidden" id="jobId" name="jobId" value="{{question.job.job_id}}">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="option" id="option1">
+                    <input class="form-check-input"  value="{{question.option_one}}" name="option" type="radio"  id="option1">
                     <label class="form-check-label" for="option1">
                       {{question.option_one}}
                     </label>
                   </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="option" id="option2">
+                    <input class="form-check-input" value="{{question.option_two}}" name="option" type="radio"  id="option2">
                     <label class="form-check-label" for="option2">
                       {{question.option_two}}
                     </label>
                   </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="option" id="option3">
+                    <input class="form-check-input" value="{{question.option_three}}" name="option" type="radio" id="option3">
                     <label class="form-check-label" for="option3">
                       {{question.option_three}}
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="option" id="option4">
+                    <input class="form-check-input" value="{{question.option_four}}"  name="option" type="radio" id="option4">
                     <label class="form-check-label" for="option4">
                       {{question.option_four}}
                     </label>
                 </div>
+                <div class="mt-5 mx-0">
+                  {%csrf_token%}
+                  <input type="submit" value="Submit">
+                </div>
             </form>
-            <hr class="border opacity-75 border-black">
         {%endfor%}
         {%endif%}
-        <form action="#" method="post">
+    </div>
+    <div class="container-fluid mt-5">
+      <nav class="pagination-btns mx-4">
+        <ol class="pagination">
+        {% if pages.has_next %}
+          <li class="page-item">
+            <a id="next-btn" class="page-link btn btn-success" href="?page={{ pages.next_page_number }}" id="next-button" >Next</a>
+          </li>
+          {%else%}
+          <form action="#" class="mx-0" method="post">
             {%csrf_token%}
             <input type="submit" value="Submit" id="submit" class="p-2 mb-2 bg-primary border text-light rounded">
-        </form>
+          </form>
+           {% endif %}
+        </ol>
+        Question {{pages.number}} of {{pages.paginator.num_pages}}
+        </nav>
     </div>
 </div>
 {% endblock content %}
 {% block script %}
 <script>
-   var options = $('[name="option"]')
-   $(function(){
-        
+  let correctAnswer = $('#correctAnswer').val()
+  let options = $('[name="option"]')
+  let nextBtn = $('#next-button')
+  let userAnswers = Array()
+  let tempAnswer;
+  let jobId = $('#jobId').val()
+  const csrf = $('input[name=csrfmiddlewaretoken]').val()
+  $(function(){
+    $(options).on('change',function(){
+      for(i=0;i<options.length;i++){
+        if(options[i].checked){
+          let userAnswer = options[i].value
+          if(userAnswer == correctAnswer){
+            document.getElementById('option1').disabled = true
+            document.getElementById('option2').disabled = true
+            document.getElementById('option3').disabled = true
+            document.getElementById('option4').disabled = true
+            userAnswers.push(userAnswer)
+            tempAnswer = userAnswer
+          }else{
+            document.getElementById('option1').disabled = true
+            document.getElementById('option2').disabled = true
+            document.getElementById('option3').disabled = true
+            document.getElementById('option4').disabled = true
+            // userAnswers.push(userAnswer)
+            tempAnswer = userAnswer
+          }
+        }else{
+          // Disable next button
+          // document.getElementById('next-button').disabled = true
+        }
+      }
+      data = {
+        'correctAnswer':correctAnswer,
+        'userAnswer':tempAnswer,
+      }
+      $.ajax({
+        method:"POST",
+        headers:{
+          "X-Requested-With": "XMLHttpRequest",
+          'Accept':'application/json',
+          'Content-Type':'application/json',
+          'X-CSRFToken':csrf
+        },
+        url:'/jobseeker/quiz/'+jobId,
+        dataType:'json',
+        data:JSON.stringify(data),
+        success:function(res){
+          console.log("hehe");
+        },
+        error:function(res){
+          console.log("oppssss");
+        }
 
-   })
+      })
+
+    })
+  })
 </script>
 {% endblock %}
