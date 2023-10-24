@@ -25,6 +25,7 @@
             <form method="post">
                 <p>Q. &nbsp;{{question.question}}</p>
                 <input type="hidden" id="correctAnswer" name="answer" value="{{question.correct_answer}}">
+                <input type="hidden" id="questionId" name="id" value="{{question.question_id}}">
                 <input type="hidden" id="jobId" name="jobId" value="{{question.job.job_id}}">
                 <div class="form-check">
                     <input class="form-check-input"  value="{{question.option_one}}" name="option" type="radio"  id="option1">
@@ -50,10 +51,8 @@
                       {{question.option_four}}
                     </label>
                 </div>
-                <div class="mt-5 mx-0">
-                  {%csrf_token%}
-                  <input type="submit" value="Submit">
-                </div>
+                {%csrf_token%}
+                <input type="submit" class="d-none">
             </form>
         {%endfor%}
         {%endif%}
@@ -85,6 +84,7 @@
   let userAnswers = Array()
   let tempAnswer;
   let jobId = $('#jobId').val()
+  let questionId = $('#questionId').val()
   const csrf = $('input[name=csrfmiddlewaretoken]').val()
   $(function(){
     $(options).on('change',function(){
@@ -112,6 +112,7 @@
         }
       }
       data = {
+        'questionId':questionId,
         'correctAnswer':correctAnswer,
         'userAnswer':tempAnswer,
       }
