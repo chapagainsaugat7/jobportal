@@ -292,29 +292,27 @@ def quiz(request,id):
                page_obj = Paginator.get_page(paginator,page_number)
                context = {'jobseeker':jobseeker,'pages':page_obj}
                if request.method == 'GET':
-                   request.session['previous_page'] = request.path_info+"?page="+request.GET.get('page','1') 
-                   print(request.session['previous_page'])
+                   request.session['next_page'] = request.path_info+"?page="+request.GET.get("page",'1') 
+                #    print(request.session['next_page'])
                    return render(request,'jobseeker-dashboard/quiz.html',context)
-                
+               
                is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
                if request.method == 'POST':
                    if is_ajax:
                        data = json.load(request)
-                       correct_answer = data.get('correctAnswer')
                        user_answer = data.get('userAnswer')
-                       user_marks = 0
-                       if user_answer == correct_answer:
-                        user_marks+=5
-                        print(request.session['previous_page'])
-                        return HttpResponseRedirect(request.session['previous_page'])
+                       question_id = data.get('questionId')
+                       #select correct answer from questions where id = question_id
+                       db_query = Questions.objects.get(question_id = question_id)
+                       score = 0
+                       if db_query.correct_answer == user_answer:
+                           score+=5
+                           return HttpResponseRedirect(request.session.get('next_page'))
                        else:
-                        print(request.session['previous_page'])
-                        print("Answer doesnt matched.")
-                        
-
-                    #    print(f'User Answer {user_answer} and correct Answer is {correct_answer}')
-                      
-                   
+                           return HttpResponseRedirect(request.session.get('next_page'))
+               if request.method == 'POST':
+                   return HttpResponseRedirect(request.session.get('next_page'))
+                             
            else:
                return render(request,'jobseeker-dashboard/quiz.html',{"message":"No quiz exists."})
                
