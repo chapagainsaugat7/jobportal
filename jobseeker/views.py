@@ -1,16 +1,15 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,JsonResponse
 from django.contrib.auth.hashers import make_password,check_password
 from django.contrib import messages
 from django.contrib.auth import logout
-from jobseeker.models import JobSeeker,AppliedJobs
+from jobseeker.models import JobSeeker,AppliedJobs,Score
 from employer.models import Job,Employer,Questions
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.template.loader import get_template
 from django.http import HttpResponse
 from django.core.files.storage import default_storage
 from django.core.paginator import Paginator
-from django.core import serializers
 from xhtml2pdf import pisa
 from io import BytesIO
 import uuid
@@ -292,8 +291,10 @@ def quiz(request,id):
                page_obj = Paginator.get_page(paginator,page_number)
                context = {'jobseeker':jobseeker,'pages':page_obj}
                if request.method == 'GET':
-                   request.session['next_page'] = request.path_info+"?page="+request.GET.get("page",'1') 
-                #    print(request.session['next_page'])
+                   if page_number == None:
+                       request.session['total_score'] = 0
+                   next_page = request.path_info+"?page="+request.GET.get("page",'1') 
+                   request.session['next_page'] = next_page
                    return render(request,'jobseeker-dashboard/quiz.html',context)
                
                is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
@@ -304,15 +305,27 @@ def quiz(request,id):
                        question_id = data.get('questionId')
                        #select correct answer from questions where id = question_id
                        db_query = Questions.objects.get(question_id = question_id)
-                       score = 0
+
                        if db_query.correct_answer == user_answer:
-                           score+=5
+                           total_score = request.session.get('total_score',0)
+                           total_score += 5
+                           request.session['total_score'] = total_score
+                           print(request.session.get('total_score',0))
                            return HttpResponseRedirect(request.session.get('next_page'))
                        else:
                            return HttpResponseRedirect(request.session.get('next_page'))
                if request.method == 'POST':
-                   return HttpResponseRedirect(request.session.get('next_page'))
-                             
+                   print("I am invoked.")
+                   user_score = request.session.get('total_score')
+                   print(user_score)
+                   try:
+                       score = Score(jobseeker = jobseeker,job = job,score = user_score)
+                       score.save()
+                       print("Data saved.")
+                       return JsonResponse({'status':"Score saved successfully.",'message':"We will email you soon."})
+                   except Exception as e:
+                       print(e)
+                       return JsonResponse({'error':'Trouble saving score.'})                             
            else:
                return render(request,'jobseeker-dashboard/quiz.html',{"message":"No quiz exists."})
                
