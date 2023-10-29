@@ -1,7 +1,7 @@
 from django.db import models
 from employer.models import Job
 import datetime
-import os
+import os,uuid
 
 def filepath(request,filename):
     old_filename = filename
@@ -44,3 +44,13 @@ class AppliedJobs(models.Model):
         verbose_name_plural = 'Applied Jobs'
     def __str__(self) -> str:
         return f'Applied For: {self.job.job_position} by {self.job_seeker.name}'
+    
+
+class Score(models.Model):
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4)
+    jobseeker = models.ForeignKey(JobSeeker,on_delete=models.CASCADE)
+    job = models.ForeignKey(Job,on_delete=models.CASCADE)
+    score = models.IntegerField(null=True,blank=True)
+
+    def __str__(self) -> str:
+        return f'Score of {self.jobseeker.name}'
