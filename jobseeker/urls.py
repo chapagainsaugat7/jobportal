@@ -12,5 +12,4 @@ urlpatterns = [
     path('downloadcv/<uuid:jobseeker_id>',download_cv,name="downloadcv"),
     path('applyjob/',applyjob,name='applyjob'),
     path('quiz/<int:id>',quiz,name='quiz')
-    # path('getquizes/<int:job_id>/<int:employer>',get_quizes,name='getquizes')
 ]
