@@ -1,13 +1,15 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from .models import Employer,Job,Questions
 from django.contrib.auth.hashers import make_password,check_password
 from django.core.files.storage import default_storage
-from django.http import JsonResponse
-from jobseeker.models import AppliedJobs
-from django.core.paginator import Paginator,PageNotAnInteger
+from django.http import JsonResponse,HttpResponse
+from jobseeker.models import AppliedJobs,JobSeeker,Score
+from django.core.paginator import Paginator
+from django.contrib.auth import logout
+from django.urls import reverse
 import json
-
+from datetime import datetime, time,timedelta
 def register_employer(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -152,6 +154,7 @@ def post_jobs(request):
                 salary = data.get('job_salary')
                 deadline = data.get('job_deadline')
                 location_type = data.get('location_type')
+                location = data.get('location')
                 try:
                     job = Job(
                               employer = employer,
@@ -161,12 +164,13 @@ def post_jobs(request):
                               job_description = description,
                               salary = salary,
                               location_type = location_type,
-                              deadline = deadline
+                              deadline = deadline,
+                              location = location
                               )
                     job.save()
                     return JsonResponse({'Success':"Job added successfully."},status = 200)
                 except Exception as e:
-                    # print(e)
+                    print(e)
                     return JsonResponse({'error':"Internal Server Error."}, status = 500)
 
 
@@ -192,7 +196,7 @@ def get_data(request):
             job_exists = Job.objects.filter(employer = employer).exists()
             if job_exists:
                 jobs = employer.job.all()
-                print(jobs)
+                # print(jobs)
                 job_list = []
                 for job in jobs:
                     job_data = {
@@ -336,5 +340,132 @@ def applicants(request):
         
         return render(request,'employer-dashboard/components/applicants.html',{'message':message,'data':applicants})
     else:
-        messages.error("Session Expired. Please login again.")
+        messages.error(request,"Session Expired. Please login again.")
         return redirect('employer_signin')
+    
+def view_jobseeker(request,id):
+    email = request.session.get('email',None)
+    if email:
+        jobseeker = JobSeeker.objects.get(id=id)
+        context = {'data':jobseeker}
+        return render(request,'employer-dashboard/components/viewjobseeker.html',context)
+    else:
+        messages.error(request,"Please login to visit this page.")
+        return redirect('employer_signin')
+    
+def notices(request):
+    email = request.session.get('email',None)
+    if email:
+        employer = Employer.objects.get(emp_email = email)
+        jobs = Job.objects.filter(employer= employer)
+        today = datetime.today().date()
+        tommorow = today + timedelta(days=1)
+        messages = []
+        current_time = datetime.combine(datetime.today(),datetime.now().time())
+        midnight = datetime.combine(datetime.today(),time())
+        if jobs.exists():
+            for job in jobs:
+                applicants = AppliedJobs.objects.filter(job = job).count()
+                if job.deadline == tommorow:
+                    has_questions = Questions.objects.filter(job = job).exists()
+                    view_url = reverse('viewjob',kwargs={'job_id':job.job_id})
+                    message = f'Deadline for job you posted for position - {job.job_position} is tommorow.&nbsp;&nbsp;<a href="{view_url}">View</a>'
+                    messages.append(message)
+
+                    if not has_questions or applicants == 0:
+                        question_url = reverse('viewquestions',kwargs={'id':job.job_id})
+                        notice = f'<span>Job you posted for position {job.job_position} has no questions posted yet. It is scheduled to be deleted. &nbsp;&nbsp<a href={question_url}>View</a></span>'                                    
+                        messages.append(notice)
+
+                        if job.deadline < today or current_time == midnight:
+                            job.delete()
+                            notice = f'<span> One job you posted is deleted because: <br> Has no questions posted yet. </span>'
+                            messages.append(notice)
+
+                elif job.deadline == today and applicants > 0:
+                    url = reverse('viewquestions',kwargs={'id':job.job_id})
+                    message = f'<span>The deadline for your aaja job {job.job_position} is today. Please select the candidates from <a href="{url}">Here</a></span>'
+                    messages.append(message)
+
+                elif job.deadline < today or current_time == midnight:
+                    job.delete()
+                    notice = f'<span> One job you posted is deleted because: It Has no questions .</span>'
+                    messages.append(notice)               
+        else:
+            message = 'No Questions are posted yet.'
+            messages.append(message)
+        context = {'job_message':messages}
+        return render(request,"employer-dashboard/components/notices.html",context)
+    else:
+        messages.error(request,"Session Expired. Please login again.")
+        return redirect('employer_signin')
+
+
+def viewjob(request,job_id):
+    email = request.session.get('email',None)
+    if email:
+        job = Job.objects.get(job_id=job_id)
+        context = {'job':job}
+        return render(request,"employer-dashboard/components/viewjobs.html",context)
+    else:
+        messages.error(request,"Session Expired. Please login again.")
+        return redirect('employer_signin')
+
+def updatejobs(request,id):
+    email = request.session.get('email',None)
+    if email:
+        job = Job.objects.get(job_id = id)
+        # print(job.salary)
+        LOCATION_TYPE = (
+                            ('Hybrid',"Hybrid"),
+                            ('On Site',"On Site"),
+                            ('Online',"Online")
+                            )
+        JOB_TYPE = (
+                ('Full time',"Full Time"),
+                ('Part Time',"Part Time"),
+                ('Freelance',"Freelance")
+                )
+        if request.method == 'POST':
+            job_type = request.POST.get('job_type')
+            position = request.POST.get('position')
+            location = request.POST.get('location')
+            position = request.POST.get('position')
+            requirements = request.POST.get('requirements')
+            description = request.POST.get('description')
+            salary = request.POST.get('salary')
+            deadline = request.POST.get('deadline')
+            location_type = request.POST.get('location_type')
+           
+            if job_type == 'Job Type' or job_type == None or job_type == '':
+                job_type = job.job_type
+
+            if location_type == 'Location Type' or location_type == None or location_type == '':
+                location_type = job.location_type
+
+            if deadline == '' or deadline == None:
+                deadline = job.deadline
+
+            job.job_type = job_type
+            job.job_position = position
+            job.job_requirement = requirements
+            job.location = location
+            job.job_description = description
+            job.salary = salary
+            job.deadline = deadline
+            try:
+                job.save()
+                messages.success(request,"Data updated sucessfully.")
+                url = f'/employer/updatejobs/{job.job_id}'
+                return redirect(url)
+
+            except Exception as e:
+                print(f'Exception updating jobs: {e}')
+        context = {'job':job,'loc_type':LOCATION_TYPE,'job_type':JOB_TYPE}
+        return render(request,'employer-dashboard/components/updatejobs.html',context)
+    else:
+        pass
+
+def logout_employer(request):
+    logout(request)
+    return redirect('employer_signin')

@@ -44,6 +44,7 @@ class Job(models.Model):
     job_requirement = models.CharField(verbose_name="Requirements",max_length=100,null=False,blank=False)
     job_description = models.TextField(verbose_name="Description",null=False,blank=False)
     salary = models.TextField(max_length=30,blank=True,null=True)
+    location = models.TextField(max_length=40,blank=False, null= False, default="Kathmandu")
     location_type = models.TextField(choices=LOCATION_TYPE,blank=False)
     deadline = models.DateField(blank=False,null=False,default=default_deadline)
 

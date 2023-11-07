@@ -42,12 +42,14 @@
       {% for applicant in applicants %}
       <tr>
         <th scope="row">{{ forloop.counter}}</th>
-        <td>{{applicant.job_seeker.name}}</td>
+        <td>
+          <a href="{% url 'view_jobseeker' id=applicant.job_seeker.id %}"> {{applicant.job_seeker.name}}</a>
+        </td>
         <td>{{applicant.job_seeker.email}}</td>
         <td>{{applicant.job_seeker.phone}}</td>
         <td>{{applicant.job|truncatechars:15}}</td>
         <td>{{applicant.coverletter | safe |truncatechars:15}}</td>
-        <td>1</td>
+        <td>{{applicant.score}}</td>
         <td>
           <i class="fas fa-check"></i>
           <i class="fas fa-x ms-3"></i>

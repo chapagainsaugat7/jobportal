@@ -6,15 +6,15 @@ from django.contrib.auth import logout
 from jobseeker.models import JobSeeker,AppliedJobs,Score
 from employer.models import Job,Employer,Questions
 from django.views.decorators.clickjacking import xframe_options_exempt
-from django.template.loader import get_template
 from django.http import HttpResponse
 from django.core.files.storage import default_storage
 from django.core.paginator import Paginator
 from xhtml2pdf import pisa
 from io import BytesIO
+from django.template.loader import get_template
 import uuid
 import json
-import datetime
+import datetime,time
 import random
 def register_job_seeker(request):
     if request.method == 'POST':
@@ -196,6 +196,8 @@ def browse_job(request,id):
             jobseeker = JobSeeker.objects.get(email=email)
             is_applied = AppliedJobs.objects.filter(job__job_id = id,job_seeker__id = jobseeker.id).exists()
             message = ''
+            has_score = Score.objects.filter(jobseeker = jobseeker, job = job).exists()
+            allow_for_quiz = True
             # Prevent jobseeker from applying job after deadline
             if datetime.date.today() > job.deadline:
                 allow = False
@@ -204,13 +206,22 @@ def browse_job(request,id):
 
             if is_applied:
                 allow = False
+                allow_for_quiz = True
                 message = "You've already applied for this job."
-                
+            
+            else:
+                allow_for_quiz = False
+
+            if has_score:
+                allow_for_quiz = False
+                message = "You've given a test. We will inform you soon about your progess."
+            else:
+                message = ""
 
             # print(is_applied)
         except Exception as e:
             print("Exception in browse_job",e)
-        context = {"data":job,"allowed":allow,"message":message,"isapplied":is_applied}
+        context = {"data":job,"allowed":allow,"message":message,"isapplied":is_applied,"allowed_for_quiz":allow_for_quiz}
         return render(request,'jobseeker-dashboard/components/browsejobs.html',context)
 
     else:
@@ -275,6 +286,60 @@ def applyjob(request):
         messages.error(request,"Please Sign in before you proceed")
         return redirect('login')
 
+# def quiz(request,id):
+#     email = request.session.get('jobseeker_email',None)
+#     if email:
+#         jobseeker = JobSeeker.objects.get(email=email)
+#         has_applied = AppliedJobs.objects.filter(job_seeker = jobseeker,job_id = id).exists()
+#         if has_applied:
+#             job = Job.objects.get(job_id = id)
+#             has_quiz = Questions.objects.filter(job=job).exists()
+#             if has_quiz:
+#                 allow_for_quiz = True
+#                 has_score = Score.objects.filter(jobseeker = jobseeker, job = job).exists()
+#                 if has_score:
+#                     allow_for_quiz = False
+#                     context = {'allow_for_test':allow_for_quiz}
+#                     return render(request,'jobseeker-dashboard/components/browsejobs.html',context)
+#                 else:
+#                     quizes = Questions.objects.filter(job=job).order_by('question_id')
+#                     paginator = Paginator(quizes,1)
+#                     page_number = request.GET.get('page')
+#                     page_obj = Paginator.get_page(paginator,page_number)
+#                     context = {'jobseeker':jobseeker,'pages':page_obj}
+#                     if request.method == 'GET':
+#                         if page_number == None:
+#                             request.session['total_score'] = 0
+#                         next_page = request.path_info+"?page="+request.GET.get("page",'1')
+#                         request.session['next_page'] = next_page
+#                         return render(request,'jobseeker-dashboard/quiz.html',context)
+#                     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+#                     if request.method == 'POST':
+#                         if is_ajax:
+#                             data = json.load(request)
+#                             user_answer = data.get('userAnswer')
+#                             question_id = data.get('questionId')
+#                             db_query = Questions.objects.get(question_id = question_id)
+#                             if db_query.correct_answer == user_answer:
+#                                 total_score = request.session.get('total_score',0)
+#                                 total_score += 5
+#                                 request.session['total_score'] = total_score
+#                                 return HttpResponseRedirect(request.session.get('next_page'))
+#                             else:
+#                                 return HttpResponseRedirect(request.session.get('next_page'))
+#                     if request.method == 'POST':
+#                         user_score = request.session.get('total_score')
+#                         try:
+#                             score = Score(jobseeker = jobseeker,job = job, score=user_score)
+#                             score.save()
+#                             return JsonResponse({'status':"Score saved successfully."})
+#                         except Exception as e:
+#                             return JsonResponse({'error':'Trouble saving score.'})
+#         else:
+#             return render(request,'jobseeker-dashboard/browsejobs.html',{"message":"No Quizes."})    
+
+
+
 def quiz(request,id):
    email = request.session.get('jobseeker_email',None)
    if email:
@@ -315,7 +380,7 @@ def quiz(request,id):
                        else:
                            return HttpResponseRedirect(request.session.get('next_page'))
                if request.method == 'POST':
-                   print("I am invoked.")
+                #    print("I am invoked.")
                    user_score = request.session.get('total_score')
                    print(user_score)
                    try:
@@ -327,7 +392,7 @@ def quiz(request,id):
                        print(e)
                        return JsonResponse({'error':'Trouble saving score.'})                             
            else:
-               return render(request,'jobseeker-dashboard/quiz.html',{"message":"No quiz exists."})
+               return render(request,'jobseeker-dashboard/browsejobs.html',{"message":"No quiz exists."})
                
        else:
            message = "You haven't applied for this job."
@@ -336,3 +401,39 @@ def quiz(request,id):
    else:
        messages.error(request,"Please sign in here.")
        return redirect('login')
+   
+
+def schedule_test(request):
+    jobs = Job.objects.get(job_id = 4)
+    print(jobs.deadline)
+    today = datetime.datetime.today().date()
+    current_time = time.strftime("%H:%M:%S")
+    print(current_time)
+    if today == jobs.deadline:
+        print("Today is deadline.")
+    else:
+        print("Noooooo")
+
+    return HttpResponse("Fuck")
+
+
+def test(job,id):
+    print(job.deadline)
+    today = datetime.datetime.today().date()
+    print(f'today is {today}')
+
+
+#if today is deadline of the job, inform jobseeker via email.
+def check_deadline(request):
+    jobs = Job.objects.all()
+    today = datetime.datetime.today().date()
+
+    for job in jobs:
+        has_questions = Questions.objects.filter(job = job).exists()
+        if has_questions:
+            print(f'{job} has Questions.')
+        else:
+            print(f'{job} has no questions.')
+
+        
+    return HttpResponse("Hehe")

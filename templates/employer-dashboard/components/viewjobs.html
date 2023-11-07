@@ -1,0 +1,38 @@
+{% extends "../index.html" %}
+{% block content %}
+<div class="container">
+    <div class="card" style="width: 54rem;">
+        <div class="d-flex justify-content-between mx-3 p-2">
+            <div class="bg-primary p-1 text-light rounded">
+                <a class="text-white" href="{% url 'viewquestions' job.job_id %}">
+                    <i class="fas fa-plus"></i>
+                    <span>Add questions</span>
+                </a>
+            </div>
+            <div>
+
+                <span class="text-success mx-3">
+                    <a href="{% url 'updatejob' job.job_id %}">
+                        <i class="fas fa-pen"></i>
+                    </a>
+                </span>
+                <span class="text-danger">
+                    <a href="#" class="text-danger">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </span>
+            </div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{job.job_position}}</h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary">{{job.job_type}}</h6>
+          <h6 class="card-subtitle mb-2 text-body-secondary">{{job.location}}</h6>
+          <h6 class="card-subtitle mb-2 text-body-secondary">{{job.location_type}}</h6>
+          <h6 class="card-subtitle mb-2 text-body-secondary">{{job.salary}}</h6>
+          <h6 class="card-subtitle mb-2 text-body-secondary">{{job.job_requirement}}</h6>
+          <p class="card-text">{{job.job_description}}</p>
+          <p class="card-text"><b>Deadline</b>&nbsp;&nbsp;{{job.deadline}}</p>
+        </div>
+      </div>
+</div>
+{% endblock %}

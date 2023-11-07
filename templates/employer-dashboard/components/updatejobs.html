@@ -1,0 +1,72 @@
+{% extends "../index.html" %}
+{% block content %}
+{% if messages %}
+<div class="container">
+
+    {% for message in messages %}
+    <div class="alert alert-primary" role="alert">
+        {{message |safe}}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+   <div class="container p-3">
+    <div class="mb-2 fw-bold">
+        Update Job
+        <hr>
+    </div>
+    <form class="row g-3" action="{% url 'updatejob' job.job_id %}" method="POST">
+
+        {% csrf_token %}
+        <div class="col-md-6">
+            <label for="job_type">Job Type</label>
+            <select class="form-select" id="job_type" name="job_type" aria-label="Default select example">
+                <option>Job Type</option>
+                {% for types in job_type %}
+                <option value="{{types.0}}">{{types.1}}</option>
+                {% endfor %}
+            </select>
+            <span class="small text-success">{{job.job_type}}</span>
+        </div>
+        <div class="col-md-6">
+            <label for="position" class="form-label">Position</label>
+            <input type="text" value="{{job.job_position}}" name="position" class="form-control" id="position" >
+        </div>
+        <div class="col-md-6">
+            <label for="requirement" class="form-label">Requirements</label>
+            <input type="text" value="{{job.job_requirement | safe }}" name="requirements" class=" form-control" id="requirement" >
+        </div>
+        <div class="col-md-6">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" value={{job.location}} name="location" class="form-control" id="location" >
+        </div>
+        <div class="col-md-6">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control" rows="3"  required>{{job.job_description}}</textarea>
+        </div>
+        <div class="col-md-6">
+            <label for="salary" class="form-label">Salary</label>
+            <input type="text" value="{{job.salary |safe}}" name="salary" class=" form-control" id="salary" >
+        </div>
+        <div class="col-md-4">
+            <label for="deadline" class="form-label">Deadline</label>
+            <input type="date" name="deadline" class=" border border-black form-control" id="deadline" >
+            <span class="small text-success fw-bold">{{job.deadline}}</span>
+        </div>
+        <div class="col-md-6 mt-5">
+          <select class="form-select border border-black" name="location_type" id="loc_type" aria-label="Select">
+            <option selected>Location Type</option>
+            {% for types in loc_type %}
+                <option value="{{types.0}}">{{types.1}}</option>
+            {% endfor %}
+        </select>
+        <span class="small text-success fw-bold">{{job.location_type}}</span>
+        </div>
+        <div class="col-12">
+          <a href="{% url 'postjobs' %}" class="btn btn-danger mt-3">Cancel</a>
+          <button type="submit" class="btn btn-primary">Update Job</button>
+
+        </div>
+      </form>
+   </div>
+{% endblock %}

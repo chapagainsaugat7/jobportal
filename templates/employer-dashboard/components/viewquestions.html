@@ -96,9 +96,11 @@
             {% for applicant in applicants %}
             <tr>
               <th scope="row">{{forloop.counter}}</th>
-              <td>{{applicant.job_seeker.name}}</td>
+              <td>
+                <a href="{% url 'view_jobseeker' id=applicant.job_seeker.id %}"> {{applicant.job_seeker.name}}</a>
+              </td>
               <td>{{applicant.job_seeker.email}}</td>
-              <td>{{applicant.coverletter|safe|truncatewords:15 }} </td>
+              <td>{{applicant.coverletter|safe|truncatewords:5 }} </td>
               <td>
                 <div class="d-flex">
                   <a href="#">View</a>

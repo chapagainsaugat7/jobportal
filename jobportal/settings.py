@@ -53,6 +53,7 @@ LOGGING = {
 
 
 INSTALLED_APPS = [
+    'django_crontab',
     'admin_tools_stats',
     'django_nvd3',
     'django_light',

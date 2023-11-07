@@ -1,0 +1,19 @@
+{% extends "../index.html" %}
+
+{% block content %}
+<div class="container">
+
+    {% if job_message %}
+    {% for message in job_message %}
+    <div class="alert alert-primary" role="alert">
+        {{message | safe}}
+    </div>
+    {% endfor %}
+    {% else  %}
+    
+    <div class="alert alert-success" role="alert">
+        No notices yet.
+      </div>
+    {% endif %}
+</div>
+{%endblock%}

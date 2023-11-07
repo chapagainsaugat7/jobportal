@@ -10,5 +10,10 @@ urlpatterns = [
     path('getdata/',get_data,name="getjobs"),
     path('questions/',questions,name="questions"),
     path('applicants/',applicants,name='applicants'),
-    path('viewquestions/<int:id>',viewquestions,name="viewquestions")
+    path('viewquestions/<int:id>',viewquestions,name="viewquestions"),
+    path('view_jobseeker/<uuid:id>',view_jobseeker,name='view_jobseeker'),
+    path('viewjob/<int:job_id>',viewjob,name="viewjob"),
+    path('logout_employer/',logout_employer,name='logout_employer'),
+    path('notices/',notices,name="notices"),
+    path('updatejobs/<int:id>',updatejobs,name='updatejob'),
 ]

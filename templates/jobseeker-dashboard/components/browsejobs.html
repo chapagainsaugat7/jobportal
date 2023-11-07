@@ -12,16 +12,20 @@
               <p class="card-text">Salary:&nbsp; <b>{{data.salary}}</b></p>
               <p class="card-text">Type: <b>{{data.location_type}}</b></p>
               <p class="card-text mt-2 mb-3 text-danger">Open Till: {{data.deadline}}</p>
-              <a href="{% url 'view_employer' employer=data.employer.emp_id %}" class="card-link d-block mb-3">Employer : {{data.employer.emp_name}}</a> 
+              <a href="{% url 'view_employer' data.employer.emp_id %}" class="card-link d-block mb-3">Employer : {{data.employer.emp_name}}</a> 
               {% if allowed %}
-              <a href="#" data-bs-toggle="modal" data-bs-target="#applyJob" class="m-0 bg-primary p-2 text-white rounded">Apply Job</a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#applyJob" class="m-0 bg-primary p-2 text-white rounded">Apply Job</a>
               {%else%}
               <a href="#"  data-bs-toggle="modal" class="m-0 bg-danger p-2 text-white rounded" aria-disabled="true" style="cursor: not-allowed;">Apply Job</a>
               <span class="p-2 text-success d-block mt-3">{{message}}</span>
-              <a class="d-block mt-3" href="{% url 'quiz' data.job_id %}">Give test</a>
-                
               {%endif%}
-              <a class="d-block mt-3" href="{% url 'jobseeker-dashboard' %}"> <i class="fas fa-long-arrow-alt-left"></i> Go Back</a>
+
+              {% if allowed_for_quiz %}
+                <a class="d-block mt-3" href="{% url 'quiz' data.job_id %}">Give test</a>
+              {%else%}
+                {{message}}
+                  <a class="d-block mt-3" href="{% url 'jobseeker-dashboard' %}"> <i class="fas fa-long-arrow-alt-left"></i> Go Back</a>
+                {% endif %}
 
             </div>
           </div>
