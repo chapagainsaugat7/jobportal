@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.html import format_html
-import datetime,os
+import datetime,os,uuid
 from .utility import default_deadline
 
 def filepath(request,filename):
@@ -17,7 +17,7 @@ class Employer(models.Model):
     emp_password = models.CharField(null=False,blank=False,verbose_name='Employer Password',max_length=255)
     about_employer = models.TextField(verbose_name='About Employer',blank=True,null=True)
     emp_profile = models.FileField(upload_to=filepath ,null=True,verbose_name='Profile Photo')
-    
+    date_joined = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     def __str__(self):
         return self.emp_name
     
