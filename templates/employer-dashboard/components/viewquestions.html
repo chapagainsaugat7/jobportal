@@ -3,8 +3,15 @@
 {% block content %}
 <div class="container">
     <div class="card">
-        <div class="card-header">
+        <div class="card-header d-flex justify-content-between">
+          <div>
             Job posted by {{job.employer.emp_name}}
+          </div>
+          <div>
+            <a href="{% url 'viewfinalcandidates' job.job_id %}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View Shortlisted Candidates">
+              <i class="fas fa-eye"></i>
+            </a>
+          </div>
         </div>
         <div class="card-body">
             <h1 class="card-title fs-5">{{job.job_position}}</h1>
@@ -101,9 +108,10 @@
               </td>
               <td>{{applicant.job_seeker.email}}</td>
               <td>{{applicant.coverletter|safe|truncatewords:5 }} </td>
+              
               <td>
                 <div class="d-flex">
-                  <a href="#">View</a>
+                  <a href="{% url 'viewprogress' applicant.job_seeker.id job.job_id %}">View</a>
                 </div>
               </td>
             </tr>
@@ -167,4 +175,8 @@
 {% block script%}
 {%load static%}
 <script type="module" src="{% static 'js/addQuestions.js' %}"></script>
+<script>
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 {%endblock%}
