@@ -61,7 +61,7 @@
               </div>
             </div>
             <!-- For Employer-->
-            <div class="tab-pane fade show" id="nav-profile" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+            <div class="tab-pane fade show" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
               <div class=" d-flex flex-column justify-content-center align-items-center">
   
                 <i class="fa-solid fa-building d-block mt-1" style="font-size: 80px;"></i>
@@ -93,10 +93,13 @@
         <nav class="d-flex justify-content-center align-items-center">
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
             
-            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Job Seeker</button>
+            <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">
+              <a href="{% url 'register_jobseeker' %}">Job Seeker</a>  
+            </button>
 
-            
-            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Employer</button>
+            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
+              <a href="{% url 'employer_registration' %}">Employer</a>
+            </button>
             
           </div>
         </nav>
@@ -114,7 +117,17 @@
             </div>
           </div>
           <!-- For Employer-->
-          <div class="tab-pane fade show" id="nav-profile" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+          {% comment %} <div class="tab-pane fade show" id="nav-profile" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+            <div class=" d-flex flex-column justify-content-center align-items-center">
+
+              <i class="fa-solid fa-building d-block mt-1" style="font-size: 80px;"></i>
+              <button type="button" class=" btn button mt-2">
+                <a class="text-white" href="{% url 'employer_registration' %}">Register</a></button>
+              
+              <span class="fs-6 mt-2 grey"> Hire the qualified candidate.</span>
+            </div>
+          </div> {% endcomment %}
+          <div class="tab-pane fade show" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
             <div class=" d-flex flex-column justify-content-center align-items-center">
 
               <i class="fa-solid fa-building d-block mt-1" style="font-size: 80px;"></i>
