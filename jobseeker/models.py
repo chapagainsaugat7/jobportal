@@ -30,7 +30,7 @@ class JobSeeker(models.Model):
     preferences = models.TextField(null=True,blank=True,verbose_name="Job Preferences")
     cv = models.FileField(upload_to=filepath,verbose_name='CV')
     profile = models.FileField(upload_to=profilepath,verbose_name='Profile')
-
+    
     def __str__(self):
         return self.name
     
@@ -54,3 +54,15 @@ class Score(models.Model):
 
     def __str__(self) -> str:
         return f'Score of {self.jobseeker.name}'
+
+
+class ShortListedCandidates(models.Model):
+     id = models.UUIDField(primary_key=True,default=uuid.uuid4)
+     job = models.ForeignKey(Job,on_delete=models.CASCADE)
+     jobseeker = models.ForeignKey(JobSeeker,on_delete=models.CASCADE)
+     
+     class Meta:
+         verbose_name_plural = "Short Listed Candidates"
+
+     def __str__(self) -> str:
+         return f'{self.jobseeker.name} shortlisted on {self.job.job_position}'
