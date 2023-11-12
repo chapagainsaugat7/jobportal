@@ -1,20 +1,16 @@
 {% extends "../base/base.html" %}
 
 {% block content %}
-<div class="container-fluid p-1 shadow">
+<div class="container-fluid p-1 shadow d-flex justify-content-between">
+  <div>
     <h1 class="fs-5 mx-5 p-2">Hello, {{jobseeker}} !</h1>
+  </div>
+  <div class="mx-4 p-2 fw-bold">
+    <span id="time"></span>
+  </div>
 </div>
-<!-- <div class="container-fluid p-1 bg-danger p-3 text-light" id="notification">
-  <ol class="small">
-    <li>
-      Please dont refresh this page.
-    </li>
-    <li>
-      Don't leave this page. Otherwise you will be disqualified.
-    </li>
-  </ol>
-</div> -->
 <div class="container-fluid">
+
     <div class="mx-5 mt-4">
         {% if message%}
         <div class="alert alert-warning" role="alert">
@@ -86,24 +82,30 @@
   let jobId = $('#jobId').val()
   let questionId = $('#questionId').val()
   const csrf = $('input[name=csrfmiddlewaretoken]').val()
+  let countdown = 30
+
   $(function(){
+    function updateCountdown(){
+      document.getElementById('time').textContent = `00M: ${countdown}S`
+      countdown--
+      if (countdown<0){
+        disableRadioButtons()
+        clearInterval(intervalId)
+        document.getElementById('time').textContent = 'Time Up !'
+      }
+    }
+    const intervalId = setInterval(updateCountdown,1000)
+
     $(options).on('change',function(){
       for(i=0;i<options.length;i++){
         if(options[i].checked){
           let userAnswer = options[i].value
           if(userAnswer == correctAnswer){
-            document.getElementById('option1').disabled = true
-            document.getElementById('option2').disabled = true
-            document.getElementById('option3').disabled = true
-            document.getElementById('option4').disabled = true
+           disableRadioButtons()
             userAnswers.push(userAnswer)
             tempAnswer = userAnswer
           }else{
-            document.getElementById('option1').disabled = true
-            document.getElementById('option2').disabled = true
-            document.getElementById('option3').disabled = true
-            document.getElementById('option4').disabled = true
-            // userAnswers.push(userAnswer)
+           disableRadioButtons()
             tempAnswer = userAnswer
           }
         }else{
@@ -137,6 +139,13 @@
       })
 
     })
+    function disableRadioButtons(){
+      document.getElementById('option1').disabled = true
+      document.getElementById('option2').disabled = true
+      document.getElementById('option3').disabled = true
+      document.getElementById('option4').disabled = true
+    }
   })
+
 </script>
 {% endblock %}
