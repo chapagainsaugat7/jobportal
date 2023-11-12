@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect,JsonResponse
 from django.contrib.auth.hashers import make_password,check_password
 from django.contrib import messages
 from django.contrib.auth import logout
-from jobseeker.models import JobSeeker,AppliedJobs,Score
+from jobseeker.models import JobSeeker,AppliedJobs,Score,ShortListedCandidates
 from employer.models import Job,Employer,Questions
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.http import HttpResponse
@@ -12,6 +12,8 @@ from django.core.paginator import Paginator
 from xhtml2pdf import pisa
 from io import BytesIO
 from django.template.loader import get_template
+from django.db.models import Q
+from django.urls import reverse
 import uuid
 import json
 import datetime,time
@@ -108,20 +110,29 @@ def statistics(request):
     email = request.session.get('jobseeker_email',None)
     if email:
         jobseeker = JobSeeker.objects.get(email = email)
-        # check if jobseeker applied to any job or not.
-        # may be 1 or more.
         message = ''
         applied_jobs = None
         has_applied = AppliedJobs.objects.filter(job_seeker = jobseeker).exists()
         if has_applied:
             applied_jobs = AppliedJobs.objects.filter(job_seeker = jobseeker)
-            
+
         else:
             message = 'You havenot applied to any jobs yet.'
         
+        jobs = Job.objects.all()
+        recommend_jobs = set()
+        for job in jobs:
+           matching_jobs = Job.objects.filter(location = jobseeker.address)
+           print(matching_jobs)
+           if matching_jobs.exists():
+               recommend_jobs.update(matching_jobs)
+
+        recommend_jobs = list(recommend_jobs)
+        
         context = {
             'message':message,
-            'applied_jobs':applied_jobs
+            'applied_jobs':applied_jobs,
+            'recommend_jobs':recommend_jobs
         }
         return render(request,'jobseeker-dashboard/components/statistics.html',context)
     else:
@@ -143,12 +154,12 @@ def profile(request):
             aboutyou = request.POST.get('aboutyou')
             cv = request.FILES.get('cv',None)
             experiences = request.POST.get('experiences')
+            jobseeker = JobSeeker.objects.get(email = email_add)
             if dob == '':
                 pass
             else:
                 jobseeker.date_of_birth = dob
 
-            jobseeker = JobSeeker.objects.get(email = email_add)
             if 'profile' in request.FILES:
                 if jobseeker.profile:
                     default_storage.delete(jobseeker.profile.path)
@@ -380,7 +391,6 @@ def quiz(request,id):
                        else:
                            return HttpResponseRedirect(request.session.get('next_page'))
                if request.method == 'POST':
-                #    print("I am invoked.")
                    user_score = request.session.get('total_score')
                    print(user_score)
                    try:
@@ -402,38 +412,30 @@ def quiz(request,id):
        messages.error(request,"Please sign in here.")
        return redirect('login')
    
+def search_job(request):
+    email = request.session.get('email',None)
+    print(email)
+    if email:
+        if request.method == 'POST':
+            search_query = request.POST.get('jobName')
+            # print(f'SEarch Query {search_query}')
+            if search_query == '' or search_query == 'None':
+                return redirect('jobseeker-dashboard')
+            else:
+                try:
+                    matching_jobs = Job.objects.filter(job_position = search_query)
+                    if matching_jobs.exists():
+                        context  = {'jobs':matching_jobs,'job_exists':True}
+                        return render(request,'jobseeker-dashboard/components/searchresult.html',context)
+                    else:
+                        context = {'message':"No matching job found."}
+                        return render(request,"jobseeker-dashboard/components/searchresult.html",context)
+                except Exception as e:
+                    print(f'Exception searching job {e}')
+                    return redirect('jobseeker-dashboard')
 
-def schedule_test(request):
-    jobs = Job.objects.get(job_id = 4)
-    print(jobs.deadline)
-    today = datetime.datetime.today().date()
-    current_time = time.strftime("%H:%M:%S")
-    print(current_time)
-    if today == jobs.deadline:
-        print("Today is deadline.")
+        return render(request,'jobseeker-dashboard/components/searchresult.html')
     else:
-        print("Noooooo")
+       messages.error(request,"Please sign in here.")
+       return redirect('login')
 
-    return HttpResponse("Fuck")
-
-
-def test(job,id):
-    print(job.deadline)
-    today = datetime.datetime.today().date()
-    print(f'today is {today}')
-
-
-#if today is deadline of the job, inform jobseeker via email.
-def check_deadline(request):
-    jobs = Job.objects.all()
-    today = datetime.datetime.today().date()
-
-    for job in jobs:
-        has_questions = Questions.objects.filter(job = job).exists()
-        if has_questions:
-            print(f'{job} has Questions.')
-        else:
-            print(f'{job} has no questions.')
-
-        
-    return HttpResponse("Hehe")
