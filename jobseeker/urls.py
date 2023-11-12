@@ -12,7 +12,6 @@ urlpatterns = [
     path('downloadcv/<uuid:jobseeker_id>',download_cv,name="downloadcv"),
     path('applyjob/',applyjob,name='applyjob'),
     path('quiz/<int:id>',quiz,name='quiz'),
-    path('schedule/',schedule_test,name="schedule"),
-    path('checkdeadline/',check_deadline,name="checkdeadline"),
+    path('searchjobs/',search_job,name="searchjobs"),
    
 ]
