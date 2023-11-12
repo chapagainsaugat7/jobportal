@@ -4,11 +4,15 @@ from .models import Employer,Job,Questions
 from django.contrib.auth.hashers import make_password,check_password
 from django.core.files.storage import default_storage
 from django.http import JsonResponse,HttpResponse
-from jobseeker.models import AppliedJobs,JobSeeker,Score
+from jobseeker.models import AppliedJobs,JobSeeker,Score,ShortListedCandidates
 from django.core.paginator import Paginator
+from django.core.mail import send_mail
 from django.contrib.auth import logout
 from django.urls import reverse
-import json
+from django.template.loader import get_template
+from io import BytesIO
+from xhtml2pdf import pisa
+import json,openpyxl
 from datetime import datetime, time,timedelta
 def register_employer(request):
     if request.method == 'POST':
@@ -466,6 +470,134 @@ def updatejobs(request,id):
     else:
         pass
 
+def viewprogress(request,id,job_id):
+    email = request.session.get('email',None)
+    if email:
+        jobseeker = JobSeeker.objects.get(id = id)
+        job = Job.objects.get(job_id = job_id)
+        score = Score.objects.get(jobseeker = jobseeker,job = job)
+        applied_job = AppliedJobs.objects.get(job_seeker = jobseeker, job = job)
+        shortlisted = False
+        is_shortlisted = ShortListedCandidates.objects.filter(job = job, jobseeker = jobseeker).exists()
+        if is_shortlisted:
+            shortlisted = True
+        context = {
+            'jobseeker':jobseeker,
+            'job':job,
+            'score':score,
+            'appliedjob':applied_job,
+            'is_shortlisted':shortlisted
+        }
+        
+        return render(request,'employer-dashboard/components/viewprogress.html',context)
+    else:
+        pass
+
+def shortlistcandidate(request):
+    email = request.session.get('email',None)
+    id = None
+    response = None
+    if email:
+        if request.method == 'POST':
+            jobseeker_id = request.POST.get('candidate_id')
+            job_id = request.POST.get('job_id')
+            id = job_id
+            jobseeker = JobSeeker.objects.get(id = jobseeker_id)
+            job = Job.objects.get(job_id = job_id)
+
+            try:
+                email = f'Dear {jobseeker.name}, We are pleased to inform you that you have been selected for an interview for the {job.job_position} by {job.employer.emp_name}. Congratulations!'
+                jobseeker_email = jobseeker.email
+                shortlist = ShortListedCandidates(job = job, jobseeker = jobseeker)
+                shortlist.save()
+                status = send_mail('Interview Invitation',
+                          email,
+                          "email.rajankhanal@gmail.com",
+                          [jobseeker_email],
+                          fail_silently=False)
+                if status == 1:
+                    print("Email sent")
+                else:
+                    print("Email not send.")
+
+            except Exception as e:
+                print(f'Exception in shortlistcandidate view - {e}')
+        return redirect('employer_dashboard')
+
+    else:
+        return redirect('employer_signin')
+
+def viewfinalcandidates(request,id):
+    email = request.session.get('email',None)
+    if email:
+        job = Job.objects.get(job_id = id)
+        candidate_exists = ShortListedCandidates.objects.filter(job = job).exists()
+        context = {"has_candidates":candidate_exists,'job':job}
+        if candidate_exists:
+            candidates = ShortListedCandidates.objects.filter(job = job)
+            context["candidates"] = candidates
+        else:
+            pass
+            
+        # print(context)
+        return render(request,'employer-dashboard/components/shortlists.html',context)
+    else:
+        return redirect('employer_signin')
+    
+def downloadpdf(request,job_id):
+    email = request.session.get('email',None)
+    if email:
+        try:
+            job = Job.objects.get(job_id = job_id)
+            candidates = ShortListedCandidates.objects.filter(job = job)
+            context = {'candidates':candidates,'job':job}
+            template = get_template('employer-dashboard/components/downloadpdf.html')
+            html = template.render(context)
+            pdf_buffer = BytesIO()
+            pisa.CreatePDF(html, dest=pdf_buffer)
+            pdf_buffer.seek(0)
+            response = HttpResponse(pdf_buffer,content_type='application/pdf')
+            response['Content-Disposition'] = f'filename="shortlistfor{job.job_position}.pdf"'
+            return response
+        except Exception as e:
+            print(f'Error generating pdf on downloadpdf - {e}')
+    else:
+        return redirect('employer_signin')
+def downloadxlsx(request,job_id):
+    email = request.session.get('email', None)
+    if email:
+        try:
+            job = Job.objects.get(job_id = job_id)
+            candidates = ShortListedCandidates.objects.filter(job = job)
+            workbook = openpyxl.Workbook()
+            worksheet = workbook.active
+            worksheet.title = f'Shortlist for {job.job_position}'
+            # Setting column headers.
+            worksheet['A1'] = "S.N."
+            worksheet['B1'] = "Name"
+            worksheet['C1'] = "Address"
+            worksheet['D1'] = "Email Address"
+            worksheet['E1'] = "Phone Number"
+            # Starts from column 2.
+            row_num = 2
+            sn = 1
+            for candidate in candidates:
+                worksheet[f'A{row_num}'] = sn
+                worksheet[f'B{row_num}'] = candidate.jobseeker.name
+                worksheet[f'C{row_num}'] = candidate.jobseeker.address
+                worksheet[f'D{row_num}'] = candidate.jobseeker.email
+                worksheet[f'E{row_num}'] = candidate.jobseeker.phone
+                sn +=1 
+                row_num +=1
+
+            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = f'attachment;filename="shortlist_for_{job.job_position}.xlsx'
+            workbook.save(response)
+            return response
+        except Exception as e:
+            print(f"Exception in downloadxlsx view {e}")
+    else:
+        return redirect('employer_signin')
 def logout_employer(request):
     logout(request)
     return redirect('employer_signin')
