@@ -16,7 +16,7 @@
                     <th scope="col">Id</th>
                     <th scope="col">Position</th>
                     <th scope="col">Employer</th>
-                    <th scope="col">Action</th>
+                    <th scope="col">Status</th>
                   </tr>
                 </thead>
                 {%for job in applied_jobs %}
@@ -35,13 +35,31 @@
                         </a>
                     </td>
                     <td>
-                        <a href="#" class="bg-danger px-2 text-white rounded"><i class="fas fa-trash"></i></a>
+                        Applied
                     </td>
                   </tr>
                 </tbody>
                 {%endfor%}
             </table>
             {%endif%}
+        </div>
+        <div class="container">
+           <h5> Local Openings:</h5>
+            <hr>
+            {% for item in recommend_jobs%}
+            <div class="card" style="width: 24rem;">
+                <div class="card-body">
+                  <h5 class="card-title">{{item.job_position}}</h5>
+                  <h6 class="card-subtitle mb-2 text-body-secondary">{{item.location_type}}</h6>
+                  <p class="card-text">{{item.job_description | truncatechars:100 |safe}}</p>
+                  <a href="{% url 'browsejob' item.job_id %}" class="card-link bg-primary rounded p-1 text-light">Browsejob</a>
+                </div>
+              </div>
+            {%empty%}
+            <div class="alert alert-success" role="alert">
+                No Local Openings Found.
+              </div>
+            {%endfor%}
         </div>
     </div>
 {% endblock content %}
