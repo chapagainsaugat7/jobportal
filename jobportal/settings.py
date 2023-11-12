@@ -53,11 +53,12 @@ LOGGING = {
 
 
 INSTALLED_APPS = [
-    'django_crontab',
+    'material',
+    'material.admin',
     'admin_tools_stats',
     'django_nvd3',
     'django_light',
-    'django.contrib.admin',
+    # 'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -68,6 +69,7 @@ INSTALLED_APPS = [
     'core',
     'jobseeker',
     'employer',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -175,3 +177,9 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'email.rajankhanal@gmail.com'
+EMAIL_HOST_PASSWORD = 'bxbq smzk sqie bfvo'
+EMAIL_USE_TLS = True
