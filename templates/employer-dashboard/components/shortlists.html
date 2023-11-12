@@ -1,0 +1,58 @@
+{% extends "../index.html" %}
+
+{% block content %}
+    {% if has_candidates %}
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-12 d-flex justify-content-between">
+                <div class="col-md-6">
+                    <h5>Shortlisted Candidates for {{job.job_position}} Position</h5>
+                    
+                </div>     
+                <div class="col-md-6 mx-auto">
+                    <a href="{% url 'downloadpdf' job.job_id %}" class="fs-5 mx-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Download PDF">
+                        <i class="fas fa-file-pdf"></i>
+                    </a>
+                    <a href="{% url 'downloadxlsx' job.job_id %}" class="fs-5" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Download Spreadsheet">
+                        <i class="fas fa-file-excel"></i>
+                    </a>
+                </div>          
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Address</th>
+                <th scope="col">Contact</th>
+              </tr>
+            </thead>
+            <tbody>
+                {%for candidate in candidates%}
+              <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{candidate.jobseeker.name}}</td>
+                <td>{{candidate.jobseeker.email}}</td>
+                <td>{{candidate.jobseeker.address}}</td>
+                <td>{{candidate.jobseeker.phone}}</td>
+              </tr>
+              {%endfor%}
+            </tbody>
+        </table>        
+    </div>
+    {%else%}
+    <div class="alert alert-primary" role="alert">
+        No shortlisted candidates.
+      </div>
+    {%endif%}
+{%endblock%}
+
+{% block script%}
+<script>
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
+{%endblock%}
