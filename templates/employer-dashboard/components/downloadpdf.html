@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        table, th, td {
+           border: 1px solid black;
+           border-collapse: collapse;
+           text-align: center;
+           padding:2px;
+        }
+        a{
+            text-decoration: none;
+            color:black;
+        }
+    </style>
+    <title>{{job.job_position}} - Shortlist</title>
+</head>
+<body>
+    <div class="container">
+        <h3>Shortlist for position {{job.job_position}}</h3>
+        <div>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th> 
+                    <th>Email</th>
+                    <th>Contact</th>
+                </tr>
+                {%for candidate in candidates %}
+            <tr>
+                <td>{{candidate.jobseeker.name}}</td>
+                <td>{{candidate.jobseeker.address}}</td>
+                <td>{{candidate.jobseeker.email}}</td>
+                <td><a href="tel:+977{{candidate.jobseeker.phone}}">{{candidate.jobseeker.phone}}</a></td>
+            </tr>
+            {%endfor%}
+            </table>
+        </div>
+    </div>
+</body>
+</html>
