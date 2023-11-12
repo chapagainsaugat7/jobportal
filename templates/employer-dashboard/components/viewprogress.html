@@ -1,0 +1,47 @@
+{% extends "../index.html" %}
+
+{% block content %}
+<div class="conatiner">
+    <div class="card mt-3" style="width: 54rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{jobseeker.name}}</h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary">Applied For: {{job}}</h6>
+          <hr>
+          <p class="card-text">Test Assesment Score: &nbsp;&nbsp; {{score.score |safe}}</p>
+          <p class="card-text">Cover Letter: {{appliedjob.coverletter |safe}}</p>
+          <span>Education </span>
+          <hr>
+          <span>{{jobseeker.qualification | safe}}</span>
+          <span>Experiences</span>
+          <hr>
+          <span>{{jobseeker.experiences | safe}}</span>
+          {% if is_shortlisted %}
+          <div class="alert alert-success" role="alert">
+            <span>This candidate is already shortlisted.</span>
+          </div>
+          {%else%}
+          <form action="{% url 'shortlistcandidate' %}" method="post" id="shortlist">
+              {%csrf_token%}
+              <input type="hidden" name="candidate_id" value="{{jobseeker.id}}"> 
+              <input type="hidden" name="job_id" value="{{job.job_id}}">
+              <input type="checkbox" name="hire" id="hire"> Shortlist Candidate
+        </form>
+            {%endif%}
+        </div>
+      </div>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(function(){
+            const form = $('#shortlist')
+            const checkbox = $('#hire')
+            checkbox.on('change',function(){
+                if(checkbox.is(':checked')){
+                    form.submit()
+                }
+            })
+        })
+    </script>
+{% endblock %}
