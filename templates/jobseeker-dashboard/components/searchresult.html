@@ -1,0 +1,28 @@
+{% extends '../dashboard.html' %}
+
+{%block content%}
+    <div class="container">
+        <div class="row mt-4">
+
+            {% if job_exists %}
+            {%for job in jobs%}
+            <div class="row row-cols-3 mx-3 my-2">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                      <h5 class="card-title">{{job.job_position}}</h5>
+                      <h6 class="card-subtitle mb-2 text-body-secondary">{{job.job_type}}</h6>
+                      <p class="card-text">{{job.job_description | safe | truncatechars:100}}</p>
+                      <h6 class="card-text">{{job.deadline}}</h6>
+                      <a href="{% url 'browsejob' job.job_id %}" class="card-link bg-primary p-1 text-light rounded">Browse Job</a>
+                    </div>
+                  </div>
+              </div>
+            {%endfor%}
+            {%else%}
+            <div class="alert alert-primary" role="alert">
+                Opps, No job for that position.
+            </div>
+            {% endif%}
+        </div>
+    </div>
+{%endblock%}
