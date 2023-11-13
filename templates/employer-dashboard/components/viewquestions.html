@@ -20,7 +20,12 @@
           <h5 class="card-title fs-6 fw-bold">{{job.salary}}</h5>
           <p class="card-text">{{job.job_description | safe}}</p>
           <p class="card-text text-danger"> Deadline: &nbsp;{{job.deadline}}</p>
+          {% if allowadd %}
           <a href="#" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#addQuestions">Add Questions</a>
+          {%else%}
+          <a href="#" class="btn btn-danger"  data-bs-toggle="modal" style="cursor:not-allowed;">Add Questions</a>
+          <span class="text-danger small d-block mt-1">Job is expired.</span>
+          {%endif%}
         </div>
     </div>
     <div class="my-4">
