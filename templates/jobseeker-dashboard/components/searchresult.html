@@ -2,27 +2,47 @@
 
 {%block content%}
     <div class="container">
-        <div class="row mt-4">
-
-            {% if job_exists %}
-            {%for job in jobs%}
-            <div class="row row-cols-3 mx-3 my-2">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                      <h5 class="card-title">{{job.job_position}}</h5>
-                      <h6 class="card-subtitle mb-2 text-body-secondary">{{job.job_type}}</h6>
-                      <p class="card-text">{{job.job_description | safe | truncatechars:100}}</p>
-                      <h6 class="card-text">{{job.deadline}}</h6>
-                      <a href="{% url 'browsejob' job.job_id %}" class="card-link bg-primary p-1 text-light rounded">Browse Job</a>
-                    </div>
-                  </div>
-              </div>
-            {%endfor%}
-            {%else%}
-            <div class="alert alert-primary" role="alert">
-                Opps, No job for that position.
+        <div class="row">
+            <div class="col-md-12 mt-4">
+                <div class="row row-cols-3">
+                    {% for job in pages%}
+                    <div class="card mx-1 my-2" style="width: 18rem;">
+                        <div class="card-body">
+                          <h5 class="card-title">{{job.job_position}}</h5>
+                          <h6 class="card-subtitle mb-2 text-body-secondary">Posted By: {{job.employer.emp_name}}</h6>
+                          <p class="card-text">{{job.job_description | truncatechars:50}}</p>
+                          <a href="{% url 'browsejob' job.job_id%}" class="btn btn-primary">Browse Job</a>
+                        </div>
+                      </div>
+                    {%endfor%}
+                </div>
             </div>
-            {% endif%}
         </div>
+
+        <nav aria-label="Result Pagination" class="mt-5">
+            <ul class="pagination">
+                {%if pages.has_previous %}
+                     <li class="page-item">
+                        <a class="page-link" href="?{{request.GET.urlencode }}&page=1">First</a>
+                    </li>
+                     <li class="page-item">
+                        <a class="page-link" href="?{{request.GET.urlencode}}&page={{pages.previous_page_number}}">Previous</a>
+                    </li>
+                {%endif%}
+
+                {%if pages.has_next %}
+                
+                {%for n in page_list%}
+                    <li class="page-item"><a class="page-link" href="?{{request.GET.urlencode}}&page={{n}}">{{n}}</a></li>
+                {%endfor%}
+
+                <li class="page-item"><a class="page-link" href="?{{request.GET.urlencode}}&page={{pages.next_page_number}}">Next</a></li>
+                <li class="page-item"><a class="page-link" href="?{{request.GET.urlencode}}&page={{lastpage}}">Last</a></li>
+                {%endif%}
+            </ul>
+          </nav>
+
     </div>
+
+
 {%endblock%}
