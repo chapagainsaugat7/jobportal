@@ -11,6 +11,8 @@
               <p class="card-text">{{data.job_description}}</p>
               <p class="card-text">Salary:&nbsp; <b>{{data.salary}}</b></p>
               <p class="card-text">Type: <b>{{data.location_type}}</b></p>
+              <p class="card-text">Location: <b>{{data.location}}</b></p>
+
               <p class="card-text mt-2 mb-3 text-danger">Open Till: {{data.deadline}}</p>
               <a href="{% url 'view_employer' data.employer.emp_id %}" class="card-link d-block mb-3">Employer : {{data.employer.emp_name}}</a> 
               {% if allowed %}
