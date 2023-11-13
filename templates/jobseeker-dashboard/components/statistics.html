@@ -35,7 +35,11 @@
                         </a>
                     </td>
                     <td>
-                        Applied
+                      {% if job.job_seeker.is_shortlisted %}
+                          <span class="bg-success p-1 text-white rounded">Shortlisted</span>
+                        {% else %}
+                          <span class="bg-primary p-1 text-white rounded"> Applied </span>
+                      {% endif %}
                     </td>
                   </tr>
                 </tbody>
