@@ -283,6 +283,7 @@ def viewquestions(request,id):
         total_pages = None
         pages = None
         view_question =None
+        allow_add = True #Initially employer can add questions.
         question_exists = Questions.objects.filter(job=job).exists()
         if question_exists:
             questions = Questions.objects.filter(job = job).order_by('question_id')
@@ -295,6 +296,9 @@ def viewquestions(request,id):
             message = "Question doesn't exists."
             total_pages = 1
         
+        today = datetime.today().date()
+        if job.deadline < today:
+            allow_add = False #if job deadline is expired. He cannot post questions.
         #Now displaying applicants for respected jobs.
         applicants = None
         applicant_not_found = ""
@@ -316,7 +320,8 @@ def viewquestions(request,id):
             'lastpage':total_pages,
             'pagelist':[n+1 for n in range(total_pages)],
             'applicant_not_found':applicant_not_found,
-            'applicants':applicants
+            'applicants':applicants,
+            'allowadd':allow_add
         }
         return render(request,'employer-dashboard/components/viewquestions.html',context)
     else:
@@ -381,20 +386,10 @@ def notices(request):
                         notice = f'<span>Job you posted for position {job.job_position} has no questions posted yet. It is scheduled to be deleted. &nbsp;&nbsp<a href={question_url}>View</a></span>'                                    
                         messages.append(notice)
 
-                        if job.deadline < today or current_time == midnight:
-                            job.delete()
-                            notice = f'<span> One job you posted is deleted because: <br> Has no questions posted yet. </span>'
-                            messages.append(notice)
-
                 elif job.deadline == today and applicants > 0:
                     url = reverse('viewquestions',kwargs={'id':job.job_id})
                     message = f'<span>The deadline for your aaja job {job.job_position} is today. Please select the candidates from <a href="{url}">Here</a></span>'
-                    messages.append(message)
-
-                elif job.deadline < today or current_time == midnight:
-                    job.delete()
-                    notice = f'<span> One job you posted is deleted because: It Has no questions .</span>'
-                    messages.append(notice)               
+                    messages.append(message)            
         else:
             message = 'No Questions are posted yet.'
             messages.append(message)
@@ -509,6 +504,8 @@ def shortlistcandidate(request):
                 email = f'Dear {jobseeker.name}, We are pleased to inform you that you have been selected for an interview for the {job.job_position} by {job.employer.emp_name}. Congratulations!'
                 jobseeker_email = jobseeker.email
                 shortlist = ShortListedCandidates(job = job, jobseeker = jobseeker)
+                jobseeker.is_shortlisted = True
+                jobseeker.save()
                 shortlist.save()
                 status = send_mail('Interview Invitation',
                           email,
