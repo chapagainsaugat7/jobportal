@@ -7,7 +7,7 @@
       <div class="collapse navbar-collapse mt-2" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link fw-medium" href="{% url 'jobseeker-dashboard' %}">Browse Jobs</a>
+            <a class="nav-link fw-medium" href="{% url 'jobseeker-dashboard' %}">Job Listings</a>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto">
@@ -21,12 +21,13 @@
                 <a href="{% url 'statistics' %}" class="nav-link fw-medium">My Statistics</a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link fw-medium">Settings</a>
-            </li>
-            <li class="nav-item">
                 <div class="dropdown">
                     <a class="dropdown-toggle nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://media.istockphoto.com/id/906808234/photo/handsome-man.jpg?s=612x612&w=0&k=20&c=Ec8IY-ETslaS56vmO77BJyEOpPM1hzJlLbs6xeKRoAc=" alt="User Image" class="image-responsive">
+                      {%if profile%}
+                        <img src="{{profile}}" alt="" style="height:30px;width: 30px;border-radius: 50%;">
+                        {%else%}
+                        <i class="fas fa-user"></i>
+                      {%endif%}
                     </a>
                     
                     <ul class="dropdown-menu dropdown-menu-right p-0" style="width:fit-content;">
