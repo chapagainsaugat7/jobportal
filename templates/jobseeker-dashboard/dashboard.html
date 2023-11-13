@@ -5,7 +5,7 @@
     {% endblock style %}
 
     {% block navbar %}
-        {% include './components/navbar.html' %}    
+        {% include './components/navbar.html' with profile=profile %}    
     {% endblock navbar %}
 
     {%block content%}
@@ -20,7 +20,7 @@
                     {% if error_message %}
                     <span class="small text-danger">{{error_message}}</span>
                     {%endif%}
-                        <form class="input-group mb-3" action="{% url 'searchjobs' %}" method="POST" id="searchForm">
+                        <form class="input-group mb-3" action="{% url 'searchjobs' %}" method="GET" id="searchForm">
                             {%csrf_token%}
                             <input type="text" class="form-control" name="jobName" placeholder="Enter Job Name" aria-label="Recipient's username" aria-describedby="basic-addon2">
                             <button id="search" class="input-group-text"><i class="fas fa-search"></i></button>
