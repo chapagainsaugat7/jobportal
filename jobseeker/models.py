@@ -30,7 +30,8 @@ class JobSeeker(models.Model):
     preferences = models.TextField(null=True,blank=True,verbose_name="Job Preferences")
     cv = models.FileField(upload_to=filepath,verbose_name='CV')
     profile = models.FileField(upload_to=profilepath,verbose_name='Profile')
-    
+    is_shortlisted = models.BooleanField(null=False,blank=False,default=False,verbose_name="Shortlisted")  
+
     def __str__(self):
         return self.name
     
