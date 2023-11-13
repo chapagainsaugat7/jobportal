@@ -89,15 +89,26 @@ def employer_signin(request):
 def employer_dashboard(request):
     email = request.session.get('email',None)
     if email:
-        messages.info(request,"Plese complete building your company profile.")
-        count =len([msg for msg in messages.get_messages(request) if msg.level == messages.INFO])
+        employer = None
+        posted_job_count = 0
+        shortlisted_num = None
         try:
-            employer = Employer.objects.filter(emp_email = email).first()
-            if employer:
-               data = Employer.objects.get(emp_email = email)
+            employer = Employer.objects.get(emp_email = email)
+            posted_jobs = Job.objects.filter(employer = employer)
+            shortelisted = ShortListedCandidates.objects.filter(job__employer = employer)
+            if shortelisted.exists():
+                shortlisted_num = shortelisted.count()
+            if posted_jobs.exists():
+                posted_job_count = Job.objects.filter(employer = employer).count()
+
         except Exception as e:
-            pass
-        return render(request,'employer-dashboard/index.html',{'data':data,'count':count})
+            print(f'Exception {e}')
+        context = {
+            'data':employer,
+            'job_count':posted_job_count,
+            'shotlisted_num':shortlisted_num
+        }
+        return render(request,'employer-dashboard/index.html',context)
     else:
         messages.error(request,"Session Expired. Please sign in again.")
         return redirect('employer_signin')
@@ -133,7 +144,7 @@ def company_profile(request):
                 employer.save()
                 messages.info(request,"Profile successfully updated.")
             except Exception as e:
-                print("Exception.....")
+                print(f"Exception..... in line 147 {e}") 
             
 
         data = employer
@@ -383,12 +394,17 @@ def notices(request):
 
                     if not has_questions or applicants == 0:
                         question_url = reverse('viewquestions',kwargs={'id':job.job_id})
-                        notice = f'<span>Job you posted for position {job.job_position} has no questions posted yet. It is scheduled to be deleted. &nbsp;&nbsp<a href={question_url}>View</a></span>'                                    
+                        notice = f'<span>Job you posted for position {job.job_position} has no questions posted yet. &nbsp;&nbsp<a href={question_url}>View</a></span>'                                    
                         messages.append(notice)
+                elif job.deadline < today:
+                    question_url = reverse('viewquestions',kwargs={'id':job.job_id})
+                    notice = f'<span> Job you posted {job.job_position} is expired. &nbsp;&nbsp;<a href={question_url}>View</a></span>'
+                    messages.append(notice)
+
 
                 elif job.deadline == today and applicants > 0:
                     url = reverse('viewquestions',kwargs={'id':job.job_id})
-                    message = f'<span>The deadline for your aaja job {job.job_position} is today. Please select the candidates from <a href="{url}">Here</a></span>'
+                    message = f'<span>The deadline for your job {job.job_position} is today. Please select the candidates from <a href="{url}">Here</a></span>'
                     messages.append(message)            
         else:
             message = 'No Questions are posted yet.'
@@ -464,6 +480,16 @@ def updatejobs(request,id):
         return render(request,'employer-dashboard/components/updatejobs.html',context)
     else:
         pass
+
+def delete_job(request,id):
+    email = request.session.get('email',None)
+    if email:
+        job = Job.objects.get(job_id = id)
+        job.delete()
+        messages.success(request,"Job Delete Successfully.")
+        return redirect("postjobs")
+    else:
+        return redirect('employer_signin')
 
 def viewprogress(request,id,job_id):
     email = request.session.get('email',None)

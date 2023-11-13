@@ -82,11 +82,9 @@ $(document).ready(function(){
       dataType: 'json',
       success: function (response) {
         if (response.data) {
-          console.log(response.data)
           $.each(response.data, function (index, data) {
             var editIcon =" <div class='flex flex-md-col flex-sm-row'><a href='/employer/updatejobs/"+data.job_id+"' id='"+data.job_id+"' class='mx-2'><i class='fas fa-pen text-blue'></i></a>"
-            var deleteIcon = "<a href='#' data-bs-toggle='modal' id='"+data.job_id+"' data-bs-target='#deletejob'><i class='fas fa-trash text-danger'></i></a></div>"
-
+            var deleteIcon = "<a href='/employer/deletejobs/"+data.job_id+"' id='"+data.job_id+"' data-bs-target='#deletejob'><i class='fas fa-trash text-danger'></i></a></div>"
             var newRow = '<tr><td>'+(index+1)+'</td><td>'+data.job_type+'</td><td>'+data.job_position+'</td><td>'+data.job_requirement+'</td><td>'+data.job_description.substring(0,15)+'...'+'</td><td>'+data.salary+'</td><td>'+data.location_type+'</td><td>'+editIcon+deleteIcon+'</td></tr>'
             $('#jobTable tbody').append(newRow)
           });

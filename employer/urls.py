@@ -17,6 +17,7 @@ urlpatterns = [
     path('notices/',notices,name="notices"),
     path('shortlistcandidate/',shortlistcandidate,name="shortlistcandidate"),
     path('updatejobs/<int:id>',updatejobs,name='updatejob'),
+    path('deletejobs/<int:id>',delete_job,name="deletejobs"),
     path('viewprogress/<uuid:id>/<int:job_id>',viewprogress,name="viewprogress"),
     path('viewfinalcandidates/<int:id>',viewfinalcandidates,name="viewfinalcandidates"),
     path('downloadpdf/<int:job_id>',downloadpdf,name='downloadpdf'),

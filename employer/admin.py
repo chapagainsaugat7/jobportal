@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import *
 # Register your models here.
 class EmployerAdmin(admin.ModelAdmin):
+    readonly_fields = ["emp_password"]
     list_display = ("emp_name", "emp_phone_number", "emp_email",)
     search_fields  = ("emp_name",)
 

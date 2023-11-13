@@ -2,21 +2,27 @@
     <h1 class="display-4 d-none fs-5 d-sm-block">
     Statistics
     </h1>
-
-    <div class="row mb-3 cards">
-
-        <div class="col-xl-3 col-sm-6 py-2">
-            <div class="card bg-primary text-white h-100">
-                <div class="card-body ">
-                    <h6 class="text-uppercase">{{data.emp_name}}</h6>
-                    <h1 class="fs-3">134</h1>
-                </div>
-            </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card p-2 mb-3 bg-primary">
+            <h1 class="card-text text-white">
+              <span class="fs-4">{{job_count}}</span>
+              <span class="d-block fs-5">Job Posted</span>
+            </h1>
+          </div>
         </div>
+        <div class="col-md-4">
+          <div class="card p-2 mb-3 bg-primary">
+            <h1 class="card-text text-white">
+              <span class="fs-4">{{shotlisted_num}}</span>
+              <span class="d-block fs-5">Shortlisted Candidates</span>
+            </h1>
+          </div>
+        </div>
+      </div>
     </div>
     <hr>
-    <h2 class="mt-4">Posted Jobs</h2>
-
     <table class="table">
         <thead>
           <tr>
@@ -26,16 +32,11 @@
             <th scope="col">Action</th>
           </tr>
         </thead>
-        {% comment %} Loop starts here {% endcomment %}
         <tbody>
           <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
+            <th scope="row" colspan="4" class="bg-primary text-white rounded p-3 text-center"> Comming soon..</th>
           </tr>
         </tbody>
-        {% comment %} Loop ends here {% endcomment %}
       </table>
     <!--/card-columns-->
 </div>
