@@ -100,8 +100,14 @@ def jobseeker_dashboard(request):
         page_number = request.GET.get('page')
         pages = paginator.get_page(page_number)
         total_pages = paginator.num_pages #Returns total number of pages.
-
-        return render(request,'jobseeker-dashboard/dashboard.html',{'job':job,'pages':pages,'lastpage':total_pages,'pagelist':[n+1 for n in range(total_pages)]})
+        jobseeker = JobSeeker.objects.get(email = email)
+        context={'job':job,
+                 'pages':pages,
+                 'lastpage':total_pages,
+                 'pagelist':[n+1 for n in range(total_pages)],
+                 'profile':jobseeker.profile.url
+                 }
+        return render(request,'jobseeker-dashboard/dashboard.html',context)
     else:
         messages.error(request,"Session Expired. Please login here.")
         return redirect('login')
@@ -123,7 +129,7 @@ def statistics(request):
         recommend_jobs = set()
         for job in jobs:
            matching_jobs = Job.objects.filter(location = jobseeker.address)
-           print(matching_jobs)
+        #    print(matching_jobs)
            if matching_jobs.exists():
                recommend_jobs.update(matching_jobs)
 
@@ -132,7 +138,8 @@ def statistics(request):
         context = {
             'message':message,
             'applied_jobs':applied_jobs,
-            'recommend_jobs':recommend_jobs
+            'recommend_jobs':recommend_jobs,
+            'profile':jobseeker.profile.url
         }
         return render(request,'jobseeker-dashboard/components/statistics.html',context)
     else:
@@ -187,7 +194,7 @@ def profile(request):
                 print(e)
 
         jobseeker = JobSeeker.objects.get(email = email_add)
-        return render(request,'jobseeker-dashboard/components/profile.html',{'data':jobseeker})
+        return render(request,'jobseeker-dashboard/components/profile.html',{'data':jobseeker,'profile':jobseeker.profile.url})
     else:
         messages.error(request,"Session Expired. Please login here.")
         return redirect('login')
@@ -228,11 +235,12 @@ def browse_job(request,id):
                 message = "You've given a test. We will inform you soon about your progess."
             else:
                 message = ""
+            
 
             # print(is_applied)
         except Exception as e:
-            print("Exception in browse_job",e)
-        context = {"data":job,"allowed":allow,"message":message,"isapplied":is_applied,"allowed_for_quiz":allow_for_quiz}
+            print(f"Exception in browse_job:{e}")
+        context = {"data":job,"allowed":allow,"message":message,"isapplied":is_applied,"allowed_for_quiz":allow_for_quiz,'profile':jobseeker.profile.url}
         return render(request,'jobseeker-dashboard/components/browsejobs.html',context)
 
     else:
@@ -243,10 +251,11 @@ def view_employer(request,employer):
     email = request.session.get('jobseeker_email',None)
     if email:
         try:
+            jobseeker = JobSeeker.objects.get(email = email)
             employer = Employer.objects.get(emp_id = employer)
         except Exception as e:
             pass
-        return render(request,'jobseeker-dashboard/components/aboutemployer.html',{'employer':employer})
+        return render(request,'jobseeker-dashboard/components/aboutemployer.html',{'employer':employer,'profile':jobseeker.profile.url})
     else:
         messages.error(request,"Session Expired. Please Login again.")
         return redirect('login')
@@ -296,60 +305,6 @@ def applyjob(request):
     else:
         messages.error(request,"Please Sign in before you proceed")
         return redirect('login')
-
-# def quiz(request,id):
-#     email = request.session.get('jobseeker_email',None)
-#     if email:
-#         jobseeker = JobSeeker.objects.get(email=email)
-#         has_applied = AppliedJobs.objects.filter(job_seeker = jobseeker,job_id = id).exists()
-#         if has_applied:
-#             job = Job.objects.get(job_id = id)
-#             has_quiz = Questions.objects.filter(job=job).exists()
-#             if has_quiz:
-#                 allow_for_quiz = True
-#                 has_score = Score.objects.filter(jobseeker = jobseeker, job = job).exists()
-#                 if has_score:
-#                     allow_for_quiz = False
-#                     context = {'allow_for_test':allow_for_quiz}
-#                     return render(request,'jobseeker-dashboard/components/browsejobs.html',context)
-#                 else:
-#                     quizes = Questions.objects.filter(job=job).order_by('question_id')
-#                     paginator = Paginator(quizes,1)
-#                     page_number = request.GET.get('page')
-#                     page_obj = Paginator.get_page(paginator,page_number)
-#                     context = {'jobseeker':jobseeker,'pages':page_obj}
-#                     if request.method == 'GET':
-#                         if page_number == None:
-#                             request.session['total_score'] = 0
-#                         next_page = request.path_info+"?page="+request.GET.get("page",'1')
-#                         request.session['next_page'] = next_page
-#                         return render(request,'jobseeker-dashboard/quiz.html',context)
-#                     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
-#                     if request.method == 'POST':
-#                         if is_ajax:
-#                             data = json.load(request)
-#                             user_answer = data.get('userAnswer')
-#                             question_id = data.get('questionId')
-#                             db_query = Questions.objects.get(question_id = question_id)
-#                             if db_query.correct_answer == user_answer:
-#                                 total_score = request.session.get('total_score',0)
-#                                 total_score += 5
-#                                 request.session['total_score'] = total_score
-#                                 return HttpResponseRedirect(request.session.get('next_page'))
-#                             else:
-#                                 return HttpResponseRedirect(request.session.get('next_page'))
-#                     if request.method == 'POST':
-#                         user_score = request.session.get('total_score')
-#                         try:
-#                             score = Score(jobseeker = jobseeker,job = job, score=user_score)
-#                             score.save()
-#                             return JsonResponse({'status':"Score saved successfully."})
-#                         except Exception as e:
-#                             return JsonResponse({'error':'Trouble saving score.'})
-#         else:
-#             return render(request,'jobseeker-dashboard/browsejobs.html',{"message":"No Quizes."})    
-
-
 
 def quiz(request,id):
    email = request.session.get('jobseeker_email',None)
@@ -413,22 +368,38 @@ def quiz(request,id):
        return redirect('login')
    
 def search_job(request):
-    email = request.session.get('email',None)
-    print(email)
+    email = request.session.get('jobseeker_email',None)
     if email:
-        if request.method == 'POST':
-            search_query = request.POST.get('jobName')
+        if request.method == 'GET':
+            # print(request.method)
+            search_query = request.GET.get('jobName')
             # print(f'SEarch Query {search_query}')
-            if search_query == '' or search_query == 'None':
+            jobseeker = JobSeeker.objects.get(email = email)
+            if search_query == '' or search_query == None:
                 return redirect('jobseeker-dashboard')
             else:
                 try:
-                    matching_jobs = Job.objects.filter(job_position = search_query)
-                    if matching_jobs.exists():
-                        context  = {'jobs':matching_jobs,'job_exists':True}
+                    # Here Django ORM does not stores data in sorted order.
+                    # So, we cannot implement binary search algorithm.
+                    # Now we can do is linear search.
+
+                    all_jobs = Job.objects.all()
+                    #Performing linear search with partial matching (Case insensitive.)
+                    matching_jobs = [job for job in all_jobs if search_query.lower() in job.job_position.lower()]
+                    # Pagination
+                    paginator = Paginator(matching_jobs,6)
+                    page_number = request.GET.get('page')
+                    page_obj = Paginator.get_page(paginator,page_number)
+                    total_pages = paginator.num_pages
+                    if matching_jobs:
+                        context  = {'pages':page_obj,
+                                    'page_list':[n+1 for n in range(total_pages)],
+                                    'job_exists':True,
+                                    'lastpage':total_pages,
+                                    'profile':jobseeker.profile.url}
                         return render(request,'jobseeker-dashboard/components/searchresult.html',context)
                     else:
-                        context = {'message':"No matching job found."}
+                        context = {'message':"No matching job found.",'profile':jobseeker.profile.url}
                         return render(request,"jobseeker-dashboard/components/searchresult.html",context)
                 except Exception as e:
                     print(f'Exception searching job {e}')
