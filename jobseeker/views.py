@@ -14,6 +14,7 @@ from io import BytesIO
 from django.template.loader import get_template
 from django.db.models import Q
 from django.urls import reverse
+from .models import Job
 import uuid
 import json
 import datetime,time
