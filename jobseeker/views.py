@@ -101,11 +101,12 @@ def jobseeker_dashboard(request):
         pages = paginator.get_page(page_number)
         total_pages = paginator.num_pages #Returns total number of pages.
         jobseeker = JobSeeker.objects.get(email = email)
+        profile_url = jobseeker.profile.url if jobseeker.profile and hasattr(jobseeker.profile, 'url') else None
         context={'job':job,
                  'pages':pages,
                  'lastpage':total_pages,
                  'pagelist':[n+1 for n in range(total_pages)],
-                 'profile':jobseeker.profile.url
+                 'profile': profile_url
                  }
         return render(request,'jobseeker-dashboard/dashboard.html',context)
     else:
@@ -134,12 +135,12 @@ def statistics(request):
                recommend_jobs.update(matching_jobs)
 
         recommend_jobs = list(recommend_jobs)
-        
+        profile_url = jobseeker.profile.url if jobseeker.profile and hasattr(jobseeker.profile, 'url') else None
         context = {
             'message':message,
             'applied_jobs':applied_jobs,
             'recommend_jobs':recommend_jobs,
-            'profile':jobseeker.profile.url
+            'profile':profile_url
         }
         return render(request,'jobseeker-dashboard/components/statistics.html',context)
     else:
@@ -194,7 +195,9 @@ def profile(request):
                 print(e)
 
         jobseeker = JobSeeker.objects.get(email = email_add)
-        return render(request,'jobseeker-dashboard/components/profile.html',{'data':jobseeker,'profile':jobseeker.profile.url})
+        profile_url = jobseeker.profile.url if jobseeker.profile and hasattr(jobseeker.profile, 'url') else None
+
+        return render(request,'jobseeker-dashboard/components/profile.html',{'data':jobseeker,'profile':profile_url})
     else:
         messages.error(request,"Session Expired. Please login here.")
         return redirect('login')
@@ -205,47 +208,51 @@ def logout_jobseeker(request):
     return redirect('home_page')
 
 
-def browse_job(request,id):
-    email = request.session.get('jobseeker_email',None)
+def browse_job(request, id):
+    email = request.session.get('jobseeker_email', None)
     if email:
-        try:   
+        try:
             allow = True
-            job = Job.objects.get(job_id = id)
+            job = Job.objects.get(job_id=id)
             jobseeker = JobSeeker.objects.get(email=email)
-            is_applied = AppliedJobs.objects.filter(job__job_id = id,job_seeker__id = jobseeker.id).exists()
+            is_applied = AppliedJobs.objects.filter(job__job_id=id, job_seeker__id=jobseeker.id).exists()
             message = ''
-            has_score = Score.objects.filter(jobseeker = jobseeker, job = job).exists()
             allow_for_quiz = True
-            # Prevent jobseeker from applying job after deadline
+            
+            # Prevent jobseeker from applying for a job after the deadline
             if datetime.date.today() > job.deadline:
                 allow = False
                 message = "Application closed."                
-            
 
             if is_applied:
                 allow = False
                 allow_for_quiz = True
                 message = "You've already applied for this job."
-            
             else:
                 allow_for_quiz = False
-
-            if has_score:
-                allow_for_quiz = False
-                message = "You've given a test. We will inform you soon about your progess."
-            else:
-                message = ""
             
-
-            # print(is_applied)
+            # Check if the profile file exists before accessing its URL
+            profile_url = jobseeker.profile.url if jobseeker.profile and jobseeker.profile.name else None
+            
         except Exception as e:
-            print(f"Exception in browse_job:{e}")
-        context = {"data":job,"allowed":allow,"message":message,"isapplied":is_applied,"allowed_for_quiz":allow_for_quiz,'profile':jobseeker.profile.url}
-        return render(request,'jobseeker-dashboard/components/browsejobs.html',context)
+            print(f"Exception in browse_job: {e}")
+            profile_url = None  # In case of any error, set profile_url to None
+            
+        context = {
+            "data": job,
+            "allowed": allow,
+            "message": message,
+            "isapplied": is_applied,
+            "allowed_for_quiz": allow_for_quiz,
+            "profile": profile_url  # Use the profile_url we checked
+        }
+        return render(request, 'jobseeker-dashboard/components/browsejobs.html', context)
 
     else:
-        messages.error(request,"Session Expired. Please Login again.")
+        messages.error(request, "Session Expired. Please Login again.")
         return redirect('login')
+
+
     
 def view_employer(request,employer):
     email = request.session.get('jobseeker_email',None)

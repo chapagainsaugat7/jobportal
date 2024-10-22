@@ -23,11 +23,11 @@
             <li class="nav-item">
                 <div class="dropdown">
                     <a class="dropdown-toggle nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      {%if profile%}
-                        <img src="{{profile}}" alt="" style="height:30px;width: 30px;border-radius: 50%;">
-                        {%else%}
+                      {% if profile and profile.url %}
+                        <img src="{{profile.url }}" alt="" style="height:30px;width: 30px;border-radius: 50%;">
+                        {% else %}
                         <i class="fas fa-user"></i>
-                      {%endif%}
+                      {% endif %}
                     </a>
                     
                     <ul class="dropdown-menu dropdown-menu-right p-0" style="width:fit-content;">

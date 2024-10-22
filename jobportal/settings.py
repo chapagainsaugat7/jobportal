@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8y*(ykjs28u+51&jeg9u$@(0*t^9^d6+s+y$d9i+b^_u!+=58#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -55,7 +55,7 @@ LOGGING = {
 INSTALLED_APPS = [
     'material',
     'material.admin',
-    'admin_tools_stats',
+    # 'admin_tools_stats',
     'django_nvd3',
     'django_light',
     # 'django.contrib.admin',

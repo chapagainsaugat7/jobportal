@@ -7,7 +7,7 @@ admin.site.site_header = "Job Portal Administration"
 admin.site.site_title ="Admin area"
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('admin_tools_stats/', include('admin_tools_stats.urls')),
+    # path('admin_tools_stats/', include('admin_tools_stats.urls')),
     path('',home,name="home_page"),
     path('jobseeker/',include('jobseeker.urls')),
     path('employer/',include('employer.urls')),
