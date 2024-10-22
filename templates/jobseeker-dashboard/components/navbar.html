@@ -11,9 +11,7 @@
           </li>
         </ul>
         <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-                <a href="{% url 'jobseeker-dashboard' %}" class="nav-link fw-medium">Overview</a>
-            </li>
+            
             <li class="nav-item">
                 <a href="{% url 'profile' %}" class="nav-link fw-medium">My Profile</a>
             </li>
@@ -31,8 +29,6 @@
                     </a>
                     
                     <ul class="dropdown-menu dropdown-menu-right p-0" style="width:fit-content;">
-                        <li><a class="dropdown-item" href="#">email@example.com</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
                         <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>
                     </ul>
                 </div>

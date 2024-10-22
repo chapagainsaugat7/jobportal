@@ -24,14 +24,16 @@
         <th scope="col">Phone</th>
         <th scope="col">Job</th>
         <th scope="col">Cover Letter</th>
+        <!--
         <th scope="col">Scores</th>
         <th scope="col">Actions</th>
-      </tr>
+      -->
+        </tr>
     </thead>
     <tbody>
       {% if message %}
       <tr>
-        <th scope="row text-center" colspan="8">
+        <th scope="row text-center" colspan="6">
           <div class="alert alert-primary" role="alert">
             {{message}}
           </div>
@@ -49,11 +51,7 @@
         <td>{{applicant.job_seeker.phone}}</td>
         <td>{{applicant.job|truncatechars:15}}</td>
         <td>{{applicant.coverletter | safe |truncatechars:15}}</td>
-        <td>{{applicant.score}}</td>
-        <td>
-          <i class="fas fa-check"></i>
-          <i class="fas fa-x ms-3"></i>
-        </td>
+        
       </tr>
       {%endfor%}
       {%endfor%}
